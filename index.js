@@ -1,8 +1,4 @@
 function setWebhook() {
-  const BOT_TOKEN =
-    PropertiesService.getScriptProperties().getProperty("BOT_TOKEN");
-  const WEBHOOK_URL =
-    PropertiesService.getScriptProperties().getProperty("WEBHOOK_URL");
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${WEBHOOK_URL}`;
   const result = UrlFetchApp.fetch(url).getContentText();
   Logger.log(result);

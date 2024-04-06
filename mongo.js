@@ -1,54 +1,64 @@
-const MONGO_HOST =
-  "https://ap-southeast-1.aws.data.mongodb-api.com/app/data-gzgsj/endpoint/data/v1/action/";
-const DATABASE = "bowobot";
-const DATA_SOURCE = "bowobot";
-
 function doMongoRequest_(action, payload) {
+  const defaultPayload = {
+    dataSource: MONGO_DATA_SOURCE,
+    database: MONGO_DATABASE,
+  };
   const options = {
     method: "post",
     contentType: "application/json",
-    payload: JSON.stringify(payload),
     headers: {
-      "api-key":
-        PropertiesService.getScriptProperties().getProperty("MONGO_API_KEY"),
+      "api-key": MONGO_API_KEY,
     },
+    payload: JSON.stringify({
+      ...defaultPayload,
+      ...payload,
+    }),
   };
-  return UrlFetchApp.fetch(MONGO_HOST + action, options).getContentText();
+
+  const response = UrlFetchApp.fetch(
+    `${MONGO_HOST}/action/${action}`,
+    options
+  ).getContentText();
+  return JSON.parse(response);
 }
 
 function dbFind(collection, filter) {
   const payload = {
-    dataSource: DATA_SOURCE,
-    database: DATABASE,
     collection,
     filter,
   };
 
   const response = doMongoRequest_("find", payload);
-  return JSON.parse(response).documents;
+  return response.documents;
 }
 
 function dbFindOne(collection, filter) {
   const payload = {
-    dataSource: DATA_SOURCE,
-    database: DATABASE,
     collection,
     filter,
   };
 
   const response = doMongoRequest_("findOne", payload);
-  return JSON.parse(response).document;
+  return response.document;
+}
+
+function dbInsertOne(collection, document) {
+  const payload = {
+    collection,
+    document,
+  };
+
+  const response = doMongoRequest_("insertOne", payload);
+  return response;
 }
 
 function dbUpdateOne(collection, filter, update) {
   const payload = {
-    dataSource: DATA_SOURCE,
-    database: DATABASE,
     collection,
     filter,
     update,
   };
 
   const response = doMongoRequest_("updateOne", payload);
-  return JSON.parse(response);
+  return response;
 }

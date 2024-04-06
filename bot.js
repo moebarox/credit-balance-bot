@@ -15,6 +15,12 @@ function handle(data) {
     case "about":
       aboutHandler(data.message);
       break;
+    case "create":
+      createHandler(data.message);
+      break;
+    case "join":
+      joinHandler(data.message);
+      break;
     case "credit":
       creditHandler(data.message);
       break;
@@ -22,17 +28,15 @@ function handle(data) {
   }
 }
 
-function sendMessage(chatId, text, options = {}) {
-  const BOT_TOKEN =
-    PropertiesService.getScriptProperties().getProperty("BOT_TOKEN");
+function sendMessage(chatId, text, payloadOptions = {}) {
   const apiUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-  const payload = {
+  const options = {
     method: "post",
     payload: {
       chat_id: String(chatId),
       text: String(text),
-      ...options,
+      ...payloadOptions,
     },
   };
-  UrlFetchApp.fetch(apiUrl, payload);
+  UrlFetchApp.fetch(apiUrl, options);
 }
