@@ -45,5 +45,12 @@ function newBillingHandler(ctxMessage) {
     balance: 0,
   });
 
-  sendMessage(groupId, "sudah jadi mamangque :D");
+  sendMessage(
+    groupId,
+    [
+      "sudah jadi mamangque :D",
+      `yang mau gabung tinggal kirim command \`/join ${key}\``,
+    ],
+    { parse_mode: "MarkdownV2" }
+  );
 }
