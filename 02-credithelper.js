@@ -1,3 +1,17 @@
+function listBillingWithMembers($match) {
+  return dbAggregate("billings", [
+    { $match },
+    {
+      $lookup: {
+        from: "members",
+        localField: "_id",
+        foreignField: "billingId",
+        as: "billingMembers",
+      },
+    },
+  ]);
+}
+
 function listBillings(groupId) {
   return dbFind("billings", { groupId });
 }

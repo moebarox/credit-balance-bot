@@ -5,11 +5,9 @@ function showBalanceHandler(ctxMessage) {
 
   // Print all credit balance within the current group
   if (!text) {
-    const billings = listBillings(groupId);
+    const billings = listBillingWithMembers({ groupId });
     billings.forEach((billing) => {
-      const members = listMembers(billing._id);
-      const message = generateCreditBalance(billing, members);
-
+      const message = generateCreditBalance(billing, billing.billingMembers);
       sendMessage(groupId, message);
     });
     return;
@@ -26,10 +24,10 @@ function showBalanceHandler(ctxMessage) {
   }
 
   const { key } = matcher.groups;
-  const billing = getBilling(groupId, key);
+  const billings = listBillingWithMembers({ groupId, key });
 
   // Error not found
-  if (!billing) {
+  if (billings.length === 0) {
     sendMessage(
       groupId,
       `aku tidak manggih kata kunci \`${key}\` yang elu cari :\\(`,
@@ -38,7 +36,9 @@ function showBalanceHandler(ctxMessage) {
     return;
   }
 
-  const members = listMembers(billing._id);
-  const message = generateCreditBalance(billing, members);
+  const message = generateCreditBalance(
+    billings[0],
+    billings[0].billingMembers
+  );
   sendMessage(groupId, message);
 }
