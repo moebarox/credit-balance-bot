@@ -4,3 +4,7 @@ function toMonthYear(date) {
     year: "numeric",
   });
 }
+
+function isLeapYear(date) {
+  return new Date(date).getFullYear() % 4 === 0;
+}

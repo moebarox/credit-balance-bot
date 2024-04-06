@@ -24,7 +24,7 @@ function generateCreditBalance(billing, members) {
     Number(billing.billingAmount) / members.length
   );
   return [
-    `Saldo ${billing.key} ${toMonthYear(new Date())}`,
+    `saldo ${billing.key} ${toMonthYear(new Date())}`,
     "---",
     userBalance.join("\n"),
     "---",

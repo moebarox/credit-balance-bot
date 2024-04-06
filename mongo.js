@@ -82,3 +82,13 @@ function dbDeleteMany(collection, filter) {
   const response = doMongoRequest_("deleteMany", payload);
   return response;
 }
+
+function dbAggregate(collection, pipeline) {
+  const payload = {
+    collection,
+    pipeline,
+  };
+
+  const response = doMongoRequest_("aggregate", payload);
+  return response.documents;
+}
