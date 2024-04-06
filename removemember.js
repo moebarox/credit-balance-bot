@@ -18,8 +18,8 @@ function removeMemberHandler(ctxMessage) {
 
   const { key, users } = matcher.groups;
 
-  const billing = getBilling(groupId, key);
-  if (!billing) {
+  const billings = listBillingWithMembers({ groupId, key });
+  if (billings.length === 0) {
     sendMessage(
       groupId,
       `aku tidak manggih kata kunci \`${key}\` yang elu cari :\\(`,
@@ -29,6 +29,7 @@ function removeMemberHandler(ctxMessage) {
   }
 
   // Error permission denied
+  const billing = billings[0];
   if (String(ctxMessage.from.id) !== String(billing.adminId)) {
     sendMessage(groupId, "punten ari didinya saha? dulur lain");
     return;
@@ -39,24 +40,18 @@ function removeMemberHandler(ctxMessage) {
     .filter(Boolean)
     .map((u) => u.replace("@", ""));
 
-  const members = dbFind("members", {
-    billingId: { $oid: billing._id },
-    username: { $in: usernames },
+  const members = billing.billingMembers.filter((m) =>
+    usernames.includes(m.username)
+  );
+
+  dbDeleteMany("members", {
+    username: { $in: members.map((m) => m.username) },
   });
 
-  try {
-    dbDeleteMany("members", {
-      username: { $in: members.map((m) => m.username) },
-    });
-
-    const userBalance = generateUserBalance(members);
-    sendMessage(groupId, [
-      "berhasil ngahapus member dengan sisa saldo:",
-      "---",
-      userBalance.join("\n"),
-    ]);
-  } catch (err) {
-    console.error(err);
-    sendMessage(groupId, "lieur otak aing :(");
-  }
+  const userBalance = generateUserBalance(members);
+  sendMessage(groupId, [
+    "berhasil ngahapus member dengan sisa saldo:",
+    "---",
+    userBalance.join("\n"),
+  ]);
 }

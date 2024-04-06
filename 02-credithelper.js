@@ -12,10 +12,6 @@ function listBillingWithMembers($match) {
   ]);
 }
 
-function listBillings(groupId) {
-  return dbFind("billings", { groupId });
-}
-
 function getBilling(groupId, key) {
   return dbFindOne("billings", { groupId, key });
 }

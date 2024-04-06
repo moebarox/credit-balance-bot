@@ -16,8 +16,8 @@ function joinHandler(ctxMessage) {
 
   const { key } = matcher.groups;
 
-  const billing = getBilling(groupId, key);
-  if (!billing) {
+  const billings = listBillingWithMembers({ groupId, key });
+  if (billings.length === 0) {
     sendMessage(
       groupId,
       `aku tidak manggih kata kunci \`${key}\` yang elu cari :\\(`,
@@ -27,24 +27,17 @@ function joinHandler(ctxMessage) {
   }
 
   // Check if already joined
-  const member = dbFindOne("members", {
-    billingId: { $oid: billing._id },
-    username,
-  });
-  if (member) {
-    sendMessage(groupId, "sudah join bosque :(");
+  const billing = billings[0];
+  const isMember = billing.billingMembers.some((m) => m.username === username);
+  if (isMember) {
+    sendMessage(groupId, "didinya sudah pernah join bosque :(");
     return;
   }
 
-  try {
-    dbInsertOne("members", {
-      billingId: { $oid: billing._id },
-      username,
-      balance: 0,
-    });
-    sendMessage(groupId, "berhasil join mamangque :D");
-  } catch (err) {
-    console.error(err);
-    sendMessage(groupId, "lieur otak aing :(");
-  }
+  dbInsertOne("members", {
+    billingId: { $oid: billing._id },
+    username,
+    balance: 0,
+  });
+  sendMessage(groupId, "berhasil join mamangque :D");
 }

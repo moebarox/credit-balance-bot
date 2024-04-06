@@ -18,8 +18,8 @@ function addMemberHandler(ctxMessage) {
 
   const { key, users } = matcher.groups;
 
-  const billing = getBilling(groupId, key);
-  if (!billing) {
+  const billings = listBillingWithMembers({ groupId, key });
+  if (billings.length === 0) {
     sendMessage(
       groupId,
       `aku tidak manggih kata kunci \`${key}\` yang elu cari :\\(`,
@@ -29,6 +29,7 @@ function addMemberHandler(ctxMessage) {
   }
 
   // Error permission denied
+  const billing = billings[0];
   if (String(ctxMessage.from.id) !== String(billing.adminId)) {
     sendMessage(groupId, "punten ari didinya saha? dulur lain");
     return;
@@ -39,10 +40,9 @@ function addMemberHandler(ctxMessage) {
     .filter(Boolean)
     .map((u) => u.replace("@", ""));
 
-  const members = dbFind("members", {
-    billingId: { $oid: billing._id },
-    username: { $in: usernames },
-  });
+  const members = billing.billingMembers.filter((m) =>
+    usernames.includes(m.username)
+  );
 
   const payload = usernames.reduce((acc, username) => {
     const isMember = members.some((m) => m.username === username);
@@ -60,11 +60,6 @@ function addMemberHandler(ctxMessage) {
     ];
   }, []);
 
-  try {
-    dbInsertMany("members", payload);
-    sendMessage(groupId, "berhasil join mamangque :D");
-  } catch (err) {
-    console.error(err);
-    sendMessage(groupId, "lieur otak aing :(");
-  }
+  dbInsertMany("members", payload);
+  sendMessage(groupId, "berhasil join mamangque :D");
 }

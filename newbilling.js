@@ -21,7 +21,7 @@ function newBillingHandler(ctxMessage) {
   const { key, billingDate, billingAmount } = matcher.groups;
 
   // Check if already created
-  const billing = dbFindOne("billings", { key, groupId });
+  const billing = getBilling(groupId, key);
   if (billing) {
     sendMessage(
       groupId,
@@ -31,24 +31,19 @@ function newBillingHandler(ctxMessage) {
     return;
   }
 
-  try {
-    const id = dbInsertOne("billings", {
-      groupId,
-      key,
-      billingDate: Number(billingDate),
-      billingAmount: Number(billingAmount),
-      adminId: ctxMessage.from.id,
-    });
+  const id = dbInsertOne("billings", {
+    groupId,
+    key,
+    billingDate: Number(billingDate),
+    billingAmount: Number(billingAmount),
+    adminId: ctxMessage.from.id,
+  });
 
-    dbInsertOne("members", {
-      billingId: { $oid: id },
-      username: ctxMessage.from.username,
-      balance: 0,
-    });
+  dbInsertOne("members", {
+    billingId: { $oid: id },
+    username: ctxMessage.from.username,
+    balance: 0,
+  });
 
-    sendMessage(groupId, "sudah jadi mamangque :D");
-  } catch (err) {
-    console.error(err);
-    sendMessage(groupId, "lieur otak aing :(");
-  }
+  sendMessage(groupId, "sudah jadi mamangque :D");
 }

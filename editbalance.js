@@ -43,26 +43,21 @@ function editBalanceHandler(ctxMessage) {
     Number(amount)
   );
 
-  try {
-    if (failed.length) {
-      const usernames = failed.map((u) => u.username);
-      sendMessage(groupId, `*${usernames.join(", ")}* saha aisia, teu kenal`, {
-        parse_mode: "MarkdownV2",
-      });
-    }
+  if (failed.length) {
+    const usernames = failed.map((u) => u.username);
+    sendMessage(groupId, `*${usernames.join(", ")}* saha aisia, teu kenal`, {
+      parse_mode: "MarkdownV2",
+    });
+  }
 
-    if (success.length) {
-      const userBalance = generateUserBalance(success);
-      sendMessage(groupId, [
-        `saldo ${key} beres diubah`,
-        "---",
-        userBalance.join("\n"),
-        "---",
-        "mun saldona teu berubah jigana aya nu salah",
-      ]);
-    }
-  } catch (err) {
-    console.error(err);
-    sendMessage(groupId, "lieur otak aing :(");
+  if (success.length) {
+    const userBalance = generateUserBalance(success);
+    sendMessage(groupId, [
+      `saldo ${key} beres diubah`,
+      "---",
+      userBalance.join("\n"),
+      "---",
+      "mun saldona teu berubah jigana aya nu salah",
+    ]);
   }
 }
