@@ -17,14 +17,18 @@ function createHandler(message) {
 
   const { key, billingDate, billingAmount } = matcher.groups;
 
-  const result = dbFind("credits", { key, groupId });
-  if (result.length > 0) {
-    sendMessage(
-      groupId,
-      "sudah ada bosque, jangan buat yang sama ya da bageur :("
-    );
-    return;
-  }
+  // Check if already created
+  try {
+    const result = dbFindOne("credits", { key, groupId });
+    if (result) {
+      sendMessage(
+        groupId,
+        `kata kunci \`${key}\` sudah ada bosque, jangan buat yang sama ya, da bageur :(`,
+        { parse_mode: "MarkdownV2" }
+      );
+      return;
+    }
+  } catch (err) {}
 
   try {
     dbInsertOne("credits", {
@@ -33,7 +37,7 @@ function createHandler(message) {
       billingDate,
       billingAmount,
     });
-    sendMessage(groupId, "sudah jadi bosque");
+    sendMessage(groupId, "sudah jadi mamangque :D");
   } catch (err) {
     console.error(err);
     sendMessage(groupId, "lieur otak aing :(");
