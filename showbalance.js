@@ -5,10 +5,10 @@ function showBalanceHandler(ctxMessage) {
 
   // Print all credit balance within the current group
   if (!text) {
-    const billings = listBillings_(groupId);
+    const billings = listBillings(groupId);
     billings.forEach((billing) => {
-      const members = listMembers_(billing._id);
-      const message = generateCreditBalance_(billing, members);
+      const members = listMembers(billing._id);
+      const message = generateCreditBalance(billing, members);
 
       sendMessage(groupId, message);
     });
@@ -26,7 +26,7 @@ function showBalanceHandler(ctxMessage) {
   }
 
   const { key } = matcher.groups;
-  const billing = getBilling_(groupId, key);
+  const billing = getBilling(groupId, key);
 
   // Error not found
   if (!billing) {
@@ -38,7 +38,7 @@ function showBalanceHandler(ctxMessage) {
     return;
   }
 
-  const members = listMembers_(billing._id);
-  const message = generateCreditBalance_(billing, members);
+  const members = listMembers(billing._id);
+  const message = generateCreditBalance(billing, members);
   sendMessage(groupId, message);
 }

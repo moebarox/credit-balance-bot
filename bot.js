@@ -15,6 +15,12 @@ function handle(data) {
     case "editbalance":
       editBalanceHandler(data.message);
       break;
+    case "addmember":
+      addMemberHandler(data.message);
+      break;
+    case "removemember":
+      removeMemberHandler(data.message);
+      break;
     default:
   }
 }

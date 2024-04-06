@@ -16,7 +16,7 @@ function joinHandler(ctxMessage) {
 
   const { key } = matcher.groups;
 
-  const billing = getBilling_(groupId, key);
+  const billing = getBilling(groupId, key);
   if (!billing) {
     sendMessage(
       groupId,
@@ -27,11 +27,11 @@ function joinHandler(ctxMessage) {
   }
 
   // Check if already joined
-  const result = dbFindOne("members", {
+  const member = dbFindOne("members", {
     billingId: { $oid: billing._id },
     username,
   });
-  if (result) {
+  if (member) {
     sendMessage(groupId, "sudah join bosque :(");
     return;
   }

@@ -52,6 +52,16 @@ function dbInsertOne(collection, document) {
   return response.insertedId;
 }
 
+function dbInsertMany(collection, documents) {
+  const payload = {
+    collection,
+    documents,
+  };
+
+  const response = doMongoRequest_("insertMany", payload);
+  return response;
+}
+
 function dbUpdateOne(collection, filter, update) {
   const payload = {
     collection,
@@ -60,5 +70,15 @@ function dbUpdateOne(collection, filter, update) {
   };
 
   const response = doMongoRequest_("updateOne", payload);
+  return response;
+}
+
+function dbDeleteMany(collection, filter) {
+  const payload = {
+    collection,
+    filter,
+  };
+
+  const response = doMongoRequest_("deleteMany", payload);
   return response;
 }

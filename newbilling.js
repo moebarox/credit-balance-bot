@@ -21,8 +21,8 @@ function newBillingHandler(ctxMessage) {
   const { key, billingDate, billingAmount } = matcher.groups;
 
   // Check if already created
-  const result = dbFindOne("billings", { key, groupId });
-  if (result) {
+  const billing = dbFindOne("billings", { key, groupId });
+  if (billing) {
     sendMessage(
       groupId,
       `kata kunci \`${key}\` sudah ada bosque, jangan buat yang sama ya, da bageur :\\(`,

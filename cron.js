@@ -33,7 +33,7 @@ function creditScheduler() {
     updateCredit_(config.key, config.groupId, ["all"], -config.deductAmount);
 
     const credits = dbFind("credits", { creditId: { $oid: config._id } });
-    const creditByUser = generateUserBalance_(credits);
+    const creditByUser = generateUserBalance(credits);
     const msg =
       "Saldo " +
       config.key +
@@ -60,7 +60,7 @@ function creditScheduler() {
     });
 
     if (insufficientCredits.length) {
-      const creditByUser = generateUserBalance_(insufficientCredits);
+      const creditByUser = generateUserBalance(insufficientCredits);
       sendMessage(
         config.groupId,
         "guys saldo antum kurang nih buat subscription bulan depan\n\n" +

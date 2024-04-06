@@ -1,25 +1,25 @@
-function listBillings_(groupId) {
+function listBillings(groupId) {
   return dbFind("billings", { groupId });
 }
 
-function getBilling_(groupId, key) {
+function getBilling(groupId, key) {
   return dbFindOne("billings", { groupId, key });
 }
 
-function listMembers_(billingId) {
+function listMembers(billingId) {
   return dbFind("members", {
     billingId: { $oid: billingId },
   });
 }
 
-function generateUserBalance_(members) {
+function generateUserBalance(members) {
   return members.map((u) => {
     return `@${u.username}: ${toCurrency(Number(u.balance))}`;
   });
 }
 
-function generateCreditBalance_(billing, members) {
-  const userBalance = generateUserBalance_(members);
+function generateCreditBalance(billing, members) {
+  const userBalance = generateUserBalance(members);
   const billingAmountPerUser = Math.round(
     Number(billing.billingAmount) / members.length
   );
@@ -28,15 +28,15 @@ function generateCreditBalance_(billing, members) {
     "---",
     userBalance.join("\n"),
     "---",
-    `saldo dipotong ${toCurrency(Number(billingAmountPerUser))} tiap tanggal ${
-      billing.billingDate
-    }`,
+    `saldo dipotong ${toCurrency(
+      Number(billingAmountPerUser)
+    )} per orang tiap tanggal ${billing.billingDate}`,
   ];
 }
 
-function updateBalance_(billing, users, amount) {
+function updateBalance(billing, users, amount) {
   const failed = [];
-  const members = listMembers_(billing._id);
+  const members = listMembers(billing._id);
   const targetUser =
     users[0] === "all" ? members.map((c) => c.username) : users;
   const foundUsers = [];

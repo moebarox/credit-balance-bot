@@ -19,7 +19,7 @@ function editBalanceHandler(ctxMessage) {
   }
 
   const { key, users, amount } = matcher.groups;
-  const billing = getBilling_(groupId, key);
+  const billing = getBilling(groupId, key);
 
   // Error not found
   if (!billing) {
@@ -37,7 +37,7 @@ function editBalanceHandler(ctxMessage) {
     return;
   }
 
-  const { success, failed } = updateBalance_(
+  const { success, failed } = updateBalance(
     billing,
     users.split(" ").filter(Boolean),
     Number(amount)
@@ -52,7 +52,7 @@ function editBalanceHandler(ctxMessage) {
     }
 
     if (success.length) {
-      const userBalance = generateUserBalance_(success);
+      const userBalance = generateUserBalance(success);
       sendMessage(groupId, [
         `saldo ${key} beres diubah`,
         "---",
