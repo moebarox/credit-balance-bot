@@ -6,8 +6,31 @@ function setWebhook() {
 
 function doPost(e) {
   try {
-    var data = JSON.parse(e.postData.contents);
-    handle(data);
+    const data = JSON.parse(e.postData.contents);
+    switch (getCommand_(data.message.text)) {
+      case "about":
+        aboutHandler(data.message);
+        break;
+      case "showbalance":
+        showBalanceHandler(data.message);
+        break;
+      case "newbilling":
+        newBillingHandler(data.message);
+        break;
+      case "join":
+        joinHandler(data.message);
+        break;
+      case "editbalance":
+        editBalanceHandler(data.message);
+        break;
+      case "addmember":
+        addMemberHandler(data.message);
+        break;
+      case "removemember":
+        removeMemberHandler(data.message);
+        break;
+      default:
+    }
   } catch (err) {
     console.log(err);
     sendMessage(data.message.chat.id, `Error: ${err}`);
@@ -15,7 +38,7 @@ function doPost(e) {
 }
 
 function debug() {
-  var data = {
+  const data = {
     message: {
       chat: {
         id: -256622337,
