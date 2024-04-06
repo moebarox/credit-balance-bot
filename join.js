@@ -1,18 +1,14 @@
-function getCredit_(groupId, key) {
-  return dbFindOne("credits", { groupId, key });
-}
-
-function joinHandler(message) {
-  const groupId = message.chat.id;
-  const username = message.from.username;
-  const text = getMessage_(message.text);
+function joinHandler(ctxMessage) {
+  const groupId = ctxMessage.chat.id;
+  const username = ctxMessage.from.username;
+  const text = getMessage_(ctxMessage.text);
   const matcher = text.match(/^(?<key>\w+)$/i);
 
   // Error invalid format
   if (!matcher) {
     sendMessage(
       groupId,
-      "format salah bosque, kuduna kieu\n`/create [key] [billingDate] [billingAmount]`",
+      ["format salah bosque, kuduna kieu", "`/join [key]`"],
       { parse_mode: "MarkdownV2" }
     );
     return;
@@ -20,38 +16,30 @@ function joinHandler(message) {
 
   const { key } = matcher.groups;
 
-  // Get credit config
-  let credit;
-  try {
-    credit = getCredit_(groupId, key);
-  } catch (err) {
-    console.error(err);
+  const billing = getBilling_(groupId, key);
+  if (!billing) {
     sendMessage(
       groupId,
-      `aku tidak manggih kata kunci \`${key}\` yang elu cari :(`,
+      `aku tidak manggih kata kunci \`${key}\` yang elu cari :\\(`,
       { parse_mode: "MarkdownV2" }
     );
     return;
   }
 
   // Check if already joined
-  try {
-    const result = dbFindOne("members", {
-      creditId: { $oid: credit._id },
-      username,
-    });
-    if (result) {
-      sendMessage(groupId, "sudah join bosque :(");
-      return;
-    }
-  } catch (err) {}
+  const result = dbFindOne("members", {
+    billingId: { $oid: billing._id },
+    username,
+  });
+  if (result) {
+    sendMessage(groupId, "sudah join bosque :(");
+    return;
+  }
 
   try {
     dbInsertOne("members", {
-      creditId: { $oid: credit._id },
+      billingId: { $oid: billing._id },
       username,
-      name: [message.from.first_name, message.from.last_name].join(" "),
-      userId: message.from.id,
       balance: 0,
     });
     sendMessage(groupId, "berhasil join mamangque :D");

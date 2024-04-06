@@ -20,7 +20,7 @@ function debug() {
       chat: {
         id: -256622337,
       },
-      text: "/credit",
+      text: "/showbalance",
     },
   };
 

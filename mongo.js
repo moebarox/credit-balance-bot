@@ -49,7 +49,7 @@ function dbInsertOne(collection, document) {
   };
 
   const response = doMongoRequest_("insertOne", payload);
-  return response;
+  return response.insertedId;
 }
 
 function dbUpdateOne(collection, filter, update) {
