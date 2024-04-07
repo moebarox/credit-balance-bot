@@ -1,6 +1,7 @@
 function aboutHandler(message) {
   sendMessage(message.chat.id, [
-    "About this room:"`ID: ${message.chat.id}`,
+    "About this room:",
+    `ID: ${message.chat.id}`,
     `Title: ${message.chat.title}`,
     `Type: ${message.chat.type}`,
     "---",
