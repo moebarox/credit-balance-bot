@@ -38,9 +38,9 @@ function generateCreditBalance(billing, members) {
     "---",
     userBalance.join("\n"),
     "---",
-    `saldo dipotong ${toCurrency(
+    `tagihan ${toCurrency(Number(billing.billingAmount))} (${toCurrency(
       Number(billingAmountPerUser)
-    )} per orang tiap tanggal ${billing.billingDate}`,
+    )} / orang) tiap tanggal ${billing.billingDate}`,
   ];
 }
 

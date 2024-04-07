@@ -17,6 +17,9 @@ function doPost(e) {
       case "newbilling":
         newBillingHandler(data.message);
         break;
+      case "editbilling":
+        editBillingHandler(data.message);
+        break;
       case "join":
         joinHandler(data.message);
         break;
