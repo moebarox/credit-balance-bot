@@ -38,13 +38,13 @@ function editBillingHandler(ctxMessage) {
 
   dbUpdateOne(
     "billings",
+    { groupId, key },
     {
       groupId,
       key,
-    },
-    {
       billingDate: Number(billingDate),
       billingAmount: Number(billingAmount),
+      adminId: ctxMessage.from.id,
     }
   );
 
