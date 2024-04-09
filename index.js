@@ -5,8 +5,8 @@ function setWebhook() {
 }
 
 function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
   try {
-    const data = JSON.parse(e.postData.contents);
     switch (getCommand_(data.message.text)) {
       case "about":
         aboutHandler(data.message);
@@ -35,7 +35,6 @@ function doPost(e) {
       default:
     }
   } catch (err) {
-    console.log(err);
     sendMessage(data.message.chat.id, `Error: ${err}`);
   }
 }
@@ -45,6 +44,9 @@ function debug() {
     message: {
       chat: {
         id: -256622337,
+      },
+      from: {
+        id: BOT_ADMIN_ID,
       },
       text: "/showbalance",
     },
