@@ -2,6 +2,10 @@
 const BOT_TOKEN =
   PropertiesService.getScriptProperties().getProperty("BOT_TOKEN");
 
+// If set, the unexpected error will be sent to the bot admin
+const BOT_ADMIN_ID =
+  PropertiesService.getScriptProperties().getProperty("BOT_ADMIN_ID");
+
 // You have to deploy your first app and then set WEBHOOK_URL from Deploy > Manage deployments > Copy Web app URL
 const WEBHOOK_URL =
   PropertiesService.getScriptProperties().getProperty("WEBHOOK_URL");

@@ -1,15 +1,15 @@
-function aboutHandler(message) {
-  sendMessage(message.chat.id, [
+function aboutHandler(ctxMessage) {
+  sendMessage(ctxMessage.chat.id, [
     "About this room:",
-    `ID: ${message.chat.id}`,
-    `Title: ${message.chat.title}`,
-    `Type: ${message.chat.type}`,
+    `ID: ${ctxMessage.chat.id}`,
+    `Title: ${ctxMessage.chat.title}`,
+    `Type: ${ctxMessage.chat.type}`,
     "---",
     "About user:",
-    `ID: ${message.from.id}`,
-    `Name: ${[message.from.first_name, message.from.last_name]
+    `ID: ${ctxMessage.from.id}`,
+    `Name: ${[ctxMessage.from.first_name, ctxMessage.from.last_name]
       .filter(Boolean)
       .join(" ")}`,
-    `Username: ${message.from.username}`,
+    `Username: ${ctxMessage.from.username}`,
   ]);
 }
