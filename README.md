@@ -46,7 +46,7 @@ This Telegram Bot is designed to simplify the process of managing credit balance
 - Add Script Properties
 
   - On the Google Apps Script project, go to **Project Settings**
-  - On the **Script Properties** section and add the following properties:
+  - On the **Script Properties** section, click **Edit Script Properties** and add the following properties:
 
     - `WEBHOOK_URL` - Web app URL from the previous step
     - `BOT_TOKEN` - Your bot token from @BotFather
@@ -55,6 +55,8 @@ This Telegram Bot is designed to simplify the process of managing credit balance
     - `MONGO_DATABASE` - MongoDB database
     - `MONGO_DATA_SOURCE` - MongoDB data source
     - `MONGO_API_KEY` - MongoDB Atlas API key
+
+  - Click **Save script properties**.
 
 - Set Webhook
 
