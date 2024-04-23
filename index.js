@@ -6,6 +6,11 @@ function setWebhook() {
 
 function doPost(e) {
   const data = JSON.parse(e.postData.contents);
+
+  if (!data.message || !data.message.text) {
+    return;
+  }
+
   try {
     switch (getCommand_(data.message.text)) {
       case "about":
@@ -35,7 +40,7 @@ function doPost(e) {
       default:
     }
   } catch (err) {
-    sendMessage(data.message.chat.id, `Error: ${err}`);
+    sendMessage(BOT_ADMIN_ID || data.message.chat.id, `Error: ${err}`);
   }
 }
 
