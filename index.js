@@ -1,7 +1,7 @@
 function setWebhook() {
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${WEBHOOK_URL}`;
   const result = UrlFetchApp.fetch(url).getContentText();
-  Logger.log(result);
+  console.log(result);
 }
 
 function doPost(e) {
