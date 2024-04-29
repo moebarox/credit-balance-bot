@@ -7,14 +7,9 @@ function editBillingHandler(ctxMessage) {
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(
-      groupId,
-      [
-        "format salah bosque, kuduna kieu",
-        "`/editbilling [key] [newBillingDate] [newBillingAmount]`",
-      ],
-      { parse_mode: "MarkdownV2" }
-    );
+    sendMessage(groupId, COMMAND_HELP["editbilling"], {
+      parse_mode: "MarkdownV2",
+    });
     return;
   }
 

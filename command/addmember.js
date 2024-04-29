@@ -5,14 +5,9 @@ function addMemberHandler(ctxMessage) {
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(
-      groupId,
-      [
-        "format salah bosque, kuduna kieu",
-        "`/addmember [key] [username (bisa lebih dari satu)]`",
-      ],
-      { parse_mode: "MarkdownV2" }
-    );
+    sendMessage(groupId, COMMAND_HELP["addmember"], {
+      parse_mode: "MarkdownV2",
+    });
     return;
   }
 

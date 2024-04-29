@@ -6,11 +6,7 @@ function joinHandler(ctxMessage) {
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(
-      groupId,
-      ["format salah bosque, kuduna kieu", "`/join [key]`"],
-      { parse_mode: "MarkdownV2" }
-    );
+    sendMessage(groupId, COMMAND_HELP["join"], { parse_mode: "MarkdownV2" });
     return;
   }
 

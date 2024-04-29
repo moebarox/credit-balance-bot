@@ -7,14 +7,9 @@ function newBillingHandler(ctxMessage) {
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(
-      groupId,
-      [
-        "format salah bosque, kuduna kieu",
-        "`/newbilling [key] [billingDate] [billingAmount]`",
-      ],
-      { parse_mode: "MarkdownV2" }
-    );
+    sendMessage(groupId, COMMAND_HELP["newbilling"], {
+      parse_mode: "MarkdownV2",
+    });
     return;
   }
 

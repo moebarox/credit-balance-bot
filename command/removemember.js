@@ -5,14 +5,9 @@ function removeMemberHandler(ctxMessage) {
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(
-      groupId,
-      [
-        "format salah bosque, kuduna kieu",
-        "`/removemember [key] [username (bisa lebih dari satu)]`",
-      ],
-      { parse_mode: "MarkdownV2" }
-    );
+    sendMessage(groupId, COMMAND_HELP["removemember"], {
+      parse_mode: "MarkdownV2",
+    });
     return;
   }
 

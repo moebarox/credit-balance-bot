@@ -15,11 +15,9 @@ function showBalanceHandler(ctxMessage) {
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(
-      groupId,
-      ["format salah bosque, kuduna kieu", "`/showbalance [key]`"],
-      { parse_mode: "MarkdownV2" }
-    );
+    sendMessage(groupId, COMMAND_HELP["showbalance"], {
+      parse_mode: "MarkdownV2",
+    });
     return;
   }
 

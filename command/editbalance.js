@@ -7,14 +7,9 @@ function editBalanceHandler(ctxMessage) {
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(
-      groupId,
-      [
-        "format salah bosque, kuduna kieu",
-        "`/editbalance [key] [username (bisa lebih dari satu)] [nominal]`",
-      ],
-      { parse_mode: "MarkdownV2" }
-    );
+    sendMessage(groupId, COMMAND_HELP["editbalance"], {
+      parse_mode: "MarkdownV2",
+    });
     return;
   }
 
