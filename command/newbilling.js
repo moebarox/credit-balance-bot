@@ -5,8 +5,16 @@ function newBillingHandler(ctxMessage) {
     /^(?<key>\w+) (?<billingDate>\d+) (?<billingAmount>\d+)$/i
   );
 
-  // Error invalid format
+  // Error invalid room
+  if (!["group", "supergroup"].includes(ctxMessage.chat.type)) {
+    sendMessage(groupId, "hanya bisa di group bosque :\\(", {
+      parse_mode: "MarkdownV2",
+    });
+    return;
+  }
+
   if (!matcher) {
+    // Error invalid format
     sendMessage(groupId, COMMAND_HELP["newbilling"], {
       parse_mode: "MarkdownV2",
     });
