@@ -14,7 +14,7 @@ function doPost(e) {
   try {
     switch (getCommand_(data.message.text)) {
       case "about":
-        aboutHandler(data.message);
+        aboutHandler(data);
         break;
       case "showbalance":
         showBalanceHandler(data.message);
