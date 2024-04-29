@@ -97,3 +97,124 @@ Everytime you make changes, you need to deploy the new version. Do the following
   - **Description**: Fill with the new description (optional)
 
 - Click **Deploy**.
+
+## Commands
+
+- [`/about`](/README.md#about)
+- [`/newbilling [key] [billingDate] [billingAmount]`](/README.md#new-billing)
+- [`/editbilling [key] [newBillingDate] [newBillingAmount]`](/README.md#edit-billing)
+- [`/join [key]`](/README.md#join)
+- [`/addmember [key] [username(s)]`](/README.md#add-member)
+- [`/removemember [key] [username(s)]`](/README.md#remove-member)
+- [`/showbalance [key]`](/README.md#show-balance)
+- [`/editbalance [key] [username(s)] [amount]`](/README.md#edit-balance)
+
+## Reference
+
+### About
+
+Get information about the message. See [Telegram Bot API Update](https://core.telegram.org/bots/api#update) for more details.
+
+#### Examples
+
+- `/about`
+
+### New Billing
+
+Add new billing group
+
+#### Options
+
+- `key` - Billing key
+- `billingDate` - Billing date
+- `billingAmount` - Billing amount. This is a group billing amount and will be divided by the number of members.
+
+#### Examples
+
+- `/newbilling youtube 1 120000`
+
+### Edit Billing
+
+Edit billing group detail
+
+#### Options
+
+- `key` - Billing key
+- `newBillingDate` - New billing date
+- `newBillingAmount` - New billing amount. This is a group billing amount and will be divided by the number of members.
+
+#### Examples
+
+- `/editbilling youtube 8 149900`
+
+### Join
+
+Join as a member to the group billing
+
+#### Options
+
+- `key` - Billing key
+
+#### Examples
+
+- `/join youtube`
+
+### Add Member
+
+Register new member to the group billing. This command is similar to `/join`, but only admin can run this command.
+
+#### Options
+
+- `key` - Billing key
+- `username(s)` - Username of the new member. Can be multiple, separate by space. Using `@` will be allowed.
+
+#### Examples
+
+- `/addmember youtube johndoe`
+- `/addmember youtube johndoe janedee`
+- `/addmember youtube @johndoe @janedee`
+
+### Remove Member
+
+Remove member from the group billing. Only admin can run this command.
+
+#### Options
+
+- `key` - Billing key
+- `username(s)` - Username of the member. Can be multiple, separate by space. Using `@` will be allowed.
+
+#### Examples
+
+- `/removemember youtube johndoe`
+- `/removemember youtube johndoe janedee`
+- `/removemember youtube @johndoe @janedee`
+
+### Show Balance
+
+Show current balance of every member
+
+#### Options
+
+- `key` - Billing key (optional)
+
+#### Examples
+
+- `/showbalance`
+- `/showbalance youtube`
+
+### Edit Balance
+
+Edit balance of the member. Only admin can run this command.
+
+#### Options
+
+- `key` - Billing key
+- `username(s)` - Username of the member. Can be multiple, separate by space. Using `@` will be allowed.
+- `amount` - Topup/topdown amount. Positive value will be topup, negative value will be topdown. If multiple members is provided, the amount will affect all of them.
+
+#### Examples
+
+- `/editbalance youtube johndoe 1000`
+- `/editbalance youtube johndoe janedee -1000`
+- `/editbalance youtube @johndoe @janedee 1000`
+- `/editbalance youtube @johndoe @janedee -1000`
