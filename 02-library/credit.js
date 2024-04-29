@@ -1,6 +1,13 @@
 function listBillingWithMembers($match) {
   return dbAggregate("billings", [
-    { $match },
+    {
+      $match: {
+        ...$match,
+        groupId: {
+          $numberLong: String($match.groupId),
+        },
+      },
+    },
     {
       $lookup: {
         from: "members",
@@ -13,7 +20,12 @@ function listBillingWithMembers($match) {
 }
 
 function getBilling(groupId, key) {
-  return dbFindOne("billings", { groupId, key });
+  return dbFindOne("billings", {
+    key,
+    groupId: {
+      $numberLong: String(groupId),
+    },
+  });
 }
 
 function listMembers(billingId) {
