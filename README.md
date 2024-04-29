@@ -121,12 +121,12 @@ Get information about the message. See [Telegram Bot API Update](https://core.te
 
 ### New Billing
 
-Add new billing group
+Add new billing group.
 
 #### Options
 
-- `key` - Billing key
-- `billingDate` - Billing date
+- `key` - Billing key.
+- `billingDate` - Billing date. The scheduler will run on this date.
 - `billingAmount` - Billing amount. This is a group billing amount and will be divided by the number of members.
 
 #### Examples
@@ -135,12 +135,12 @@ Add new billing group
 
 ### Edit Billing
 
-Edit billing group detail
+Edit billing group detail.
 
 #### Options
 
-- `key` - Billing key
-- `newBillingDate` - New billing date
+- `key` - Billing key.
+- `newBillingDate` - New billing date. The scheduler will run on this date.
 - `newBillingAmount` - New billing amount. This is a group billing amount and will be divided by the number of members.
 
 #### Examples
@@ -149,11 +149,11 @@ Edit billing group detail
 
 ### Join
 
-Join as a member to the group billing
+Join as a member to the group billing.
 
 #### Options
 
-- `key` - Billing key
+- `key` - Billing key.
 
 #### Examples
 
@@ -165,7 +165,7 @@ Register new member to the group billing. This command is similar to `/join`, bu
 
 #### Options
 
-- `key` - Billing key
+- `key` - Billing key.
 - `username(s)` - Username of the new member. Can be multiple, separate by space. Using `@` will be allowed.
 
 #### Examples
@@ -180,7 +180,7 @@ Remove member from the group billing. Only admin can run this command.
 
 #### Options
 
-- `key` - Billing key
+- `key` - Billing key.
 - `username(s)` - Username of the member. Can be multiple, separate by space. Using `@` will be allowed.
 
 #### Examples
@@ -195,7 +195,7 @@ Show current balance of every member
 
 #### Options
 
-- `key` - Billing key (optional)
+- `key` - Billing key (optional). If not provided, it will show all billing groups.
 
 #### Examples
 
@@ -208,13 +208,14 @@ Edit balance of the member. Only admin can run this command.
 
 #### Options
 
-- `key` - Billing key
+- `key` - Billing key.
 - `username(s)` - Username of the member. Can be multiple, separate by space. Using `@` will be allowed.
 - `amount` - Topup/topdown amount. Positive value will be topup, negative value will be topdown. If multiple members is provided, the amount will affect all of them.
 
 #### Examples
 
 - `/editbalance youtube johndoe 1000`
+- `/editbalance youtube janedee +1000`
 - `/editbalance youtube johndoe janedee -1000`
 - `/editbalance youtube @johndoe @janedee 1000`
 - `/editbalance youtube @johndoe @janedee -1000`
