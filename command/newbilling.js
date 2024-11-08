@@ -35,11 +35,13 @@ function newBillingHandler(ctxMessage) {
   }
 
   const id = dbInsertOne("billings", {
-    groupId,
     key,
     billingDate: Number(billingDate),
     billingAmount: Number(billingAmount),
     adminId: ctxMessage.from.id,
+    groupId: {
+      $numberLong: String(groupId),
+    },
   });
 
   dbInsertOne("members", {

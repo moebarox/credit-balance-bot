@@ -33,13 +33,20 @@ function editBillingHandler(ctxMessage) {
 
   dbUpdateOne(
     "billings",
-    { groupId, key },
     {
-      groupId,
+      key,
+      groupId: {
+        $numberLong: String(groupId),
+      },
+    },
+    {
       key,
       billingDate: Number(billingDate),
       billingAmount: Number(billingAmount),
       adminId: ctxMessage.from.id,
+      groupId: {
+        $numberLong: String(groupId),
+      },
     }
   );
 
