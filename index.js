@@ -16,17 +16,20 @@ function doPost(e) {
       case "about":
         aboutHandler(data);
         break;
-      case "showbalance":
-        showBalanceHandler(data.message);
-        break;
       case "newbilling":
         newBillingHandler(data.message);
         break;
       case "editbilling":
         editBillingHandler(data.message);
         break;
+      case "deletebilling":
+        deleteBillingHandler(data.message);
+        break;
       case "join":
         joinHandler(data.message);
+        break;
+      case "showbalance":
+        showBalanceHandler(data.message);
         break;
       case "editbalance":
         editBalanceHandler(data.message);

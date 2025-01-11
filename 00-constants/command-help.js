@@ -28,6 +28,19 @@ const EDITBILLING_HELP = [
   "`/editbilling youtube 8 149900`",
 ];
 
+const DELETEBILLING_HELP = [
+  "*Menghapus Tagihan \\(permanen\\)*",
+  "```",
+  "/deletebilling [key]",
+  "```",
+  " ",
+  "*keterangan:*",
+  "`key` \\- Kata kunci tagihan\\.",
+  " ",
+  "*contoh:*",
+  "`/deletebilling youtube`",
+];
+
 const JOIN_HELP = [
   "*Bergabung Sebagai Anggota*",
   "```",
@@ -109,6 +122,7 @@ const EDITBALANCE_HELP = [
 const COMMAND_HELP = {
   newbilling: NEWBILLING_HELP,
   editbilling: EDITBILLING_HELP,
+  deletebilling: DELETEBILLING_HELP,
   join: JOIN_HELP,
   addmember: ADDMEMBER_HELP,
   removemember: REMOVEMEMBER_HELP,
