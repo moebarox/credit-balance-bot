@@ -103,6 +103,7 @@ Everytime you make changes, you need to deploy the new version. Do the following
 - [`/about`](/README.md#about)
 - [`/newbilling [key] [billingDate] [billingAmount]`](/README.md#new-billing)
 - [`/editbilling [key] [newBillingDate] [newBillingAmount]`](/README.md#edit-billing)
+- [`/deletebilling [key]`](/README.md#delete-billing)
 - [`/join [key]`](/README.md#join)
 - [`/addmember [key] [username(s)]`](/README.md#add-member)
 - [`/removemember [key] [username(s)]`](/README.md#remove-member)
@@ -146,6 +147,18 @@ Edit billing group detail.
 #### Examples
 
 - `/editbilling youtube 8 149900`
+
+### Delete Billing
+
+Delete billing permanently.
+
+#### Options
+
+- `key` - Billing key.
+
+#### Examples
+
+- `/deletebilling youtube`
 
 ### Join
 
