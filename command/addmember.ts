@@ -1,11 +1,11 @@
-function removeMemberHandler(ctxMessage) {
+function addMemberHandler(ctxMessage: TelegramMessage) {
   const groupId = ctxMessage.chat.id;
   const text = getMessage_(ctxMessage.text);
   const matcher = text.match(/^(?<key>\w+) (?<users>.+)$/i);
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(groupId, COMMAND_HELP["removemember"], {
+    sendMessage(groupId, COMMAND_HELP["addmember"], {
       parse_mode: "MarkdownV2",
     });
     return;
@@ -39,14 +39,22 @@ function removeMemberHandler(ctxMessage) {
     usernames.includes(m.username)
   );
 
-  dbDeleteMany("members", {
-    username: { $in: members.map((m) => m.username) },
-  });
+  const payload = usernames.reduce((acc, username) => {
+    const isMember = members.some((m) => m.username === username);
+    if (isMember) {
+      return acc;
+    }
 
-  const userBalance = generateUserBalance(members);
-  sendMessage(groupId, [
-    "berhasil ngahapus member dengan sisa saldo:",
-    "---",
-    userBalance.join("\n"),
-  ]);
+    return [
+      ...acc,
+      {
+        billingId: { $oid: billing._id },
+        username,
+        balance: 0,
+      },
+    ];
+  }, []);
+
+  dbInsertMany("members", payload);
+  sendMessage(groupId, "berhasil join mamangque :D");
 }

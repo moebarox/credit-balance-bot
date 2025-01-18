@@ -1,11 +1,11 @@
 const COMMAND_REGEX = /^\/(\w+)(@\w+)?/i;
 
-function getCommand_(text) {
+function getCommand_(text: string): string {
   const matcher = text.match(COMMAND_REGEX);
-  return matcher && matcher[1];
+  return matcher?.[1] ?? '';
 }
 
-function getMessage_(text) {
+function getMessage_(text: string): string {
   return text.replace(COMMAND_REGEX, "").trim();
 }
 
@@ -19,7 +19,7 @@ function sendMessage(chatId, message, payloadOptions = {}) {
     }
 
     const options = {
-      method: "post",
+      method: "post" as GoogleAppsScript.URL_Fetch.HttpMethod,
       payload: {
         chat_id: String(chatId),
         text: String(text),

@@ -1,4 +1,4 @@
-function showBalanceHandler(ctxMessage) {
+function showBalanceHandler(ctxMessage: TelegramMessage) {
   const groupId = ctxMessage.chat.id;
   const text = getMessage_(ctxMessage.text);
   const matcher = text.match(/^(?<key>\w+)$/i);

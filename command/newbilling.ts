@@ -1,4 +1,4 @@
-function newBillingHandler(ctxMessage) {
+function newBillingHandler(ctxMessage: TelegramMessage) {
   const groupId = ctxMessage.chat.id;
   const text = getMessage_(ctxMessage.text);
   const matcher = text.match(
@@ -21,7 +21,7 @@ function newBillingHandler(ctxMessage) {
     return;
   }
 
-  const { key, billingDate, billingAmount } = matcher.groups;
+  const { key, billingDate, billingAmount } = matcher.groups!;
 
   // Check if already created
   const billing = getBilling(groupId, key);

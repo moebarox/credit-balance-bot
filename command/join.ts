@@ -1,4 +1,4 @@
-function joinHandler(ctxMessage) {
+function joinHandler(ctxMessage: TelegramMessage) {
   const groupId = ctxMessage.chat.id;
   const username = ctxMessage.from.username;
   const text = getMessage_(ctxMessage.text);

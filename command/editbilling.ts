@@ -1,4 +1,4 @@
-function editBillingHandler(ctxMessage) {
+function editBillingHandler(ctxMessage: TelegramMessage) {
   const groupId = ctxMessage.chat.id;
   const text = getMessage_(ctxMessage.text);
   const matcher = text.match(

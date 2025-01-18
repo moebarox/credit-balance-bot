@@ -4,10 +4,10 @@ function setWebhook() {
   console.log(result);
 }
 
-function doPost(e) {
+function doPost(e: GoogleAppsScript.Events.DoPost) {
   const data = JSON.parse(e.postData.contents);
 
-  if (!data.message || !data.message.text) {
+  if (!data?.message?.text) {
     return;
   }
 
@@ -64,5 +64,5 @@ function debug() {
     postData: {
       contents: JSON.stringify(data),
     },
-  });
+  } as GoogleAppsScript.Events.DoPost);
 }

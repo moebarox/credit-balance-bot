@@ -1,13 +1,13 @@
-function doMongoRequest_(action, payload) {
+function doMongoRequest_(action: MongoAction, payload: MongoPayload) {
   const defaultPayload = {
     dataSource: MONGO_DATA_SOURCE,
     database: MONGO_DATABASE,
   };
-  const options = {
-    method: "post",
+  const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
+    method: "post" as GoogleAppsScript.URL_Fetch.HttpMethod,
     contentType: "application/json",
     headers: {
-      "api-key": MONGO_API_KEY,
+      "api-key": MONGO_API_KEY!,
     },
     payload: JSON.stringify({
       ...defaultPayload,
@@ -22,7 +22,7 @@ function doMongoRequest_(action, payload) {
   return JSON.parse(response);
 }
 
-function dbFind(collection, filter) {
+function dbFind(collection: string, filter: Record<string, any>) {
   const payload = {
     collection,
     filter,
@@ -32,7 +32,7 @@ function dbFind(collection, filter) {
   return response.documents;
 }
 
-function dbFindOne(collection, filter) {
+function dbFindOne(collection: string, filter: Record<string, any>) {
   const payload = {
     collection,
     filter,
@@ -42,7 +42,7 @@ function dbFindOne(collection, filter) {
   return response.document;
 }
 
-function dbInsertOne(collection, document) {
+function dbInsertOne(collection: string, document: Record<string, any>) {
   const payload = {
     collection,
     document,
@@ -52,7 +52,7 @@ function dbInsertOne(collection, document) {
   return response.insertedId;
 }
 
-function dbInsertMany(collection, documents) {
+function dbInsertMany(collection: string, documents: Record<string, any>[]) {
   const payload = {
     collection,
     documents,
@@ -62,7 +62,11 @@ function dbInsertMany(collection, documents) {
   return response;
 }
 
-function dbUpdateOne(collection, filter, update) {
+function dbUpdateOne(
+  collection: string,
+  filter: Record<string, any>,
+  update: Record<string, any>,
+) {
   const payload = {
     collection,
     filter,
@@ -73,7 +77,7 @@ function dbUpdateOne(collection, filter, update) {
   return response;
 }
 
-function dbDeleteMany(collection, filter) {
+function dbDeleteMany(collection: string, filter: Record<string, any>) {
   const payload = {
     collection,
     filter,
@@ -83,7 +87,7 @@ function dbDeleteMany(collection, filter) {
   return response;
 }
 
-function dbAggregate(collection, pipeline) {
+function dbAggregate(collection: string, pipeline: Record<string, any>[]) {
   const payload = {
     collection,
     pipeline,

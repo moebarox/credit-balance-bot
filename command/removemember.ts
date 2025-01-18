@@ -1,19 +1,17 @@
-function deleteBillingHandler(ctxMessage) {
+function removeMemberHandler(ctxMessage: TelegramMessage) {
   const groupId = ctxMessage.chat.id;
   const text = getMessage_(ctxMessage.text);
-  const matcher = text.match(
-    /^(?<key>\w+)$/i
-  );
+  const matcher = text.match(/^(?<key>\w+) (?<users>.+)$/i);
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(groupId, COMMAND_HELP["deletebilling"], {
+    sendMessage(groupId, COMMAND_HELP["removemember"], {
       parse_mode: "MarkdownV2",
     });
     return;
   }
 
-  const { key } = matcher.groups;
+  const { key, users } = matcher.groups;
 
   const billings = listBillingWithMembers({ groupId, key });
   if (billings.length === 0) {
@@ -25,30 +23,30 @@ function deleteBillingHandler(ctxMessage) {
     return;
   }
 
-  const billing = billings[0];
-
   // Error permission denied
+  const billing = billings[0];
   if (String(ctxMessage.from.id) !== String(billing.adminId)) {
     sendMessage(groupId, "punten ari didinya saha? dulur lain");
     return;
   }
 
-  dbDeleteMany("billings", {
-    _id: { $oid: billing._id },
-  });
-  
-  dbDeleteMany("members", {
-    billingId: { $oid: billing._id },
-  });
+  const usernames = users
+    .split(" ")
+    .filter(Boolean)
+    .map((u) => u.replace("@", ""));
 
-  sendMessage(groupId, [
-    "parantos dihapus mamangque :(",
-    "tapi jang jaga-jaga, ieu saldo terakhir nya"
-  ]);
-
-  const message = generateCreditBalance(
-    billing,
-    billing.billingMembers
+  const members = billing.billingMembers.filter((m) =>
+    usernames.includes(m.username)
   );
-  sendMessage(groupId, message);
+
+  dbDeleteMany("members", {
+    username: { $in: members.map((m) => m.username) },
+  });
+
+  const userBalance = generateUserBalance(members);
+  sendMessage(groupId, [
+    "berhasil ngahapus member dengan sisa saldo:",
+    "---",
+    userBalance.join("\n"),
+  ]);
 }
