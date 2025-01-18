@@ -1,3 +1,5 @@
+import './date';
+
 describe('date helpers', () => {
   describe('toMonthYear', () => {
     it('should format date to Indonesian month and year', () => {

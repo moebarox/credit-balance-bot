@@ -8,7 +8,7 @@ function billingScheduler() {
   const deduction = [];
   const reminder = [];
 
-  const billings: Billing[] = dbAggregate('billings', [
+  const billings = MongoDB.aggregate<Billing>('billings', [
     {
       $match: {
         billingDate: {
@@ -52,8 +52,10 @@ function billingScheduler() {
     );
 
     if (insufficientBalanceMembers.length) {
-      const userBalance = generateUserBalance(insufficientBalanceMembers);
-      sendMessage(billing.groupId as number, [
+      const userBalance = Credit.generateUserBalance(
+        insufficientBalanceMembers
+      );
+      Bot.sendMessage(billing.groupId as number, [
         'saldo mamang jigana kurang yeuh buat tagihan besok :(',
         '---',
         userBalance.join('\n'),
@@ -69,11 +71,11 @@ function billingScheduler() {
     const billingAmount = Math.round(
       billing.billingAmount / billing.members!.length
     );
-    updateBalance(billing, ['all'], -billingAmount);
+    Credit.updateBalance(billing, ['all'], -billingAmount);
   }
 
   if (deduction.length > 0) {
-    const updatedBillings: Billing[] = dbAggregate('billings', [
+    const updatedBillings = MongoDB.aggregate<Billing>('billings', [
       {
         $match: {
           _id: {
@@ -95,8 +97,10 @@ function billingScheduler() {
 
     for (let i = 0; i < updatedBillings.length; i += 1) {
       const billing = updatedBillings[i];
-      const message = generateCreditBalance(billing, billing.members!);
-      sendMessage(billing.groupId as number, message);
+      const message = Credit.generateCreditBalance(billing, billing.members!);
+      Bot.sendMessage(billing.groupId as number, message);
     }
   }
 }
+
+globalThis.billingScheduler = billingScheduler;

@@ -1,20 +1,22 @@
 function joinHandler(ctxMessage: TelegramMessage) {
   const groupId = ctxMessage.chat.id;
   const username = ctxMessage.from.username;
-  const text = getMessage_(ctxMessage.text);
+  const text = Bot.getMessage_(ctxMessage.text);
   const matcher = text.match(/^(?<key>\w+)$/i);
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(groupId, COMMAND_HELP['join'], { parse_mode: 'MarkdownV2' });
+    Bot.sendMessage(groupId, COMMAND_HELP['join'], {
+      parse_mode: 'MarkdownV2',
+    });
     return;
   }
 
   const { key } = matcher.groups!;
 
-  const billings = listBillingWithMembers({ groupId, key });
+  const billings = Credit.listBillingWithMembers({ groupId, key });
   if (billings.length === 0) {
-    sendMessage(
+    Bot.sendMessage(
       groupId,
       `aku tidak manggih kata kunci \`${key}\` yang elu cari :\\(`,
       { parse_mode: 'MarkdownV2' }
@@ -28,14 +30,16 @@ function joinHandler(ctxMessage: TelegramMessage) {
     (m: BillingMember) => m.username === username
   );
   if (isMember) {
-    sendMessage(groupId, 'didinya sudah pernah join bosque :(');
+    Bot.sendMessage(groupId, 'didinya sudah pernah join bosque :(');
     return;
   }
 
-  dbInsertOne('members', {
+  MongoDB.insertOne('members', {
     billingId: { $oid: billing._id },
     username,
     balance: 0,
   });
-  sendMessage(groupId, 'berhasil join mamangque :D');
+  Bot.sendMessage(groupId, 'berhasil join mamangque :D');
 }
+
+globalThis.joinHandler = joinHandler;

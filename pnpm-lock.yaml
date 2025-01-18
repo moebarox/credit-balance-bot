@@ -5,9 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 devDependencies:
-  '@jest/globals':
-    specifier: ^29.7.0
-    version: 29.7.0
   '@types/google-apps-script':
     specifier: ^1.0.91
     version: 1.0.91

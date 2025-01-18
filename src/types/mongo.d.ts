@@ -17,6 +17,12 @@ type DataAPIPayload = {
   pipeline?: Record<string, any>[];
 };
 
+type DataAPIResponse<T> = {
+  documents?: T[];
+  document?: T;
+  insertedId?: string;
+};
+
 type MongoObjectID = {
   $oid: string;
 };

@@ -1,7 +1,7 @@
 type TelegramMessage = {
   chat: {
     id: number;
-    type: 'group' | 'supergroup';
+    type: 'group' | 'supergroup' | 'private';
   };
   text: string;
   from: {

@@ -2,6 +2,7 @@
   "compilerOptions": {
     "lib": ["es2019"],
     "target": "ES2019",
-    "strict": true
+    "strict": true,
+    "esModuleInterop": true
   }
 }

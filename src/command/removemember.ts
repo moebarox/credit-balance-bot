@@ -1,11 +1,11 @@
 function removeMemberHandler(ctxMessage: TelegramMessage) {
   const groupId = ctxMessage.chat.id;
-  const text = getMessage_(ctxMessage.text);
+  const text = Bot.getMessage_(ctxMessage.text);
   const matcher = text.match(/^(?<key>\w+) (?<users>.+)$/i);
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(groupId, COMMAND_HELP['removemember'], {
+    Bot.sendMessage(groupId, COMMAND_HELP['removemember'], {
       parse_mode: 'MarkdownV2',
     });
     return;
@@ -13,9 +13,9 @@ function removeMemberHandler(ctxMessage: TelegramMessage) {
 
   const { key, users } = matcher.groups!;
 
-  const billings = listBillingWithMembers({ groupId, key });
+  const billings = Credit.listBillingWithMembers({ groupId, key });
   if (billings.length === 0) {
-    sendMessage(
+    Bot.sendMessage(
       groupId,
       `aku tidak manggih kata kunci \`${key}\` yang elu cari :\\(`,
       { parse_mode: 'MarkdownV2' }
@@ -26,7 +26,7 @@ function removeMemberHandler(ctxMessage: TelegramMessage) {
   // Error permission denied
   const billing = billings[0];
   if (String(ctxMessage.from.id) !== String(billing.adminId)) {
-    sendMessage(groupId, 'punten ari didinya saha? dulur lain');
+    Bot.sendMessage(groupId, 'punten ari didinya saha? dulur lain');
     return;
   }
 
@@ -39,14 +39,16 @@ function removeMemberHandler(ctxMessage: TelegramMessage) {
     usernames.includes(m.username)
   );
 
-  dbDeleteMany('members', {
+  MongoDB.deleteMany('members', {
     username: { $in: members.map((m: BillingMember) => m.username) },
   });
 
-  const userBalance = generateUserBalance(members);
-  sendMessage(groupId, [
+  const userBalance = Credit.generateUserBalance(members);
+  Bot.sendMessage(groupId, [
     'berhasil ngahapus member dengan sisa saldo:',
     '---',
     userBalance.join('\n'),
   ]);
 }
+
+globalThis.removeMemberHandler = removeMemberHandler;

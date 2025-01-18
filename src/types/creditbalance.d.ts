@@ -13,3 +13,13 @@ type BillingMember = {
   username: string;
   balance: number;
 };
+
+type BillingUpdateFailed = {
+  username: string;
+  code: string;
+};
+
+type BillingUpdateResult = {
+  success: BillingMember[];
+  failed: BillingUpdateFailed[];
+};

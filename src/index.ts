@@ -12,7 +12,7 @@ function doPost(e: GoogleAppsScript.Events.DoPost) {
   }
 
   try {
-    switch (getCommand_(data.message.text)) {
+    switch (Bot.getCommand_(data.message.text)) {
       case 'about':
         aboutHandler(data);
         break;
@@ -43,7 +43,7 @@ function doPost(e: GoogleAppsScript.Events.DoPost) {
       default:
     }
   } catch (err) {
-    sendMessage(BOT_ADMIN_ID || data.message.chat.id, `Error: ${err}`);
+    Bot.sendMessage(BOT_ADMIN_ID || data.message.chat.id, `Error: ${err}`);
   }
 }
 
@@ -66,3 +66,7 @@ function debug() {
     },
   } as GoogleAppsScript.Events.DoPost);
 }
+
+globalThis.setWebhook = setWebhook;
+globalThis.doPost = doPost;
+globalThis.debug = debug;
