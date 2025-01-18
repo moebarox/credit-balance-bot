@@ -1,7 +1,7 @@
 type TelegramMessage = {
   chat: {
     id: number;
-    type: "group" | "supergroup";
+    type: 'group' | 'supergroup';
   };
   text: string;
   from: {
@@ -12,4 +12,8 @@ type TelegramMessage = {
 
 type TelegramContext = {
   message: TelegramMessage;
+};
+
+type TelegramMessageOption = {
+  parse_mode?: 'HTML' | 'MarkdownV2';
 };

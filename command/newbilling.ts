@@ -6,17 +6,17 @@ function newBillingHandler(ctxMessage: TelegramMessage) {
   );
 
   // Error invalid room
-  if (!["group", "supergroup"].includes(ctxMessage.chat.type)) {
-    sendMessage(groupId, "hanya bisa di group bosque :\\(", {
-      parse_mode: "MarkdownV2",
+  if (!['group', 'supergroup'].includes(ctxMessage.chat.type)) {
+    sendMessage(groupId, 'hanya bisa di group bosque :\\(', {
+      parse_mode: 'MarkdownV2',
     });
     return;
   }
 
   if (!matcher) {
     // Error invalid format
-    sendMessage(groupId, COMMAND_HELP["newbilling"], {
-      parse_mode: "MarkdownV2",
+    sendMessage(groupId, COMMAND_HELP['newbilling'], {
+      parse_mode: 'MarkdownV2',
     });
     return;
   }
@@ -29,12 +29,12 @@ function newBillingHandler(ctxMessage: TelegramMessage) {
     sendMessage(
       groupId,
       `kata kunci \`${key}\` sudah ada bosque, jangan buat yang sama ya, da bageur :\\(`,
-      { parse_mode: "MarkdownV2" }
+      { parse_mode: 'MarkdownV2' }
     );
     return;
   }
 
-  const id = dbInsertOne("billings", {
+  const id = dbInsertOne('billings', {
     key,
     billingDate: Number(billingDate),
     billingAmount: Number(billingAmount),
@@ -44,7 +44,7 @@ function newBillingHandler(ctxMessage: TelegramMessage) {
     },
   });
 
-  dbInsertOne("members", {
+  dbInsertOne('members', {
     billingId: { $oid: id },
     username: ctxMessage.from.username,
     balance: 0,
@@ -53,9 +53,9 @@ function newBillingHandler(ctxMessage: TelegramMessage) {
   sendMessage(
     groupId,
     [
-      "sudah jadi mamangque :D",
+      'sudah jadi mamangque :D',
       `yang mau gabung tinggal kirim command \`/join ${key}\``,
     ],
-    { parse_mode: "MarkdownV2" }
+    { parse_mode: 'MarkdownV2' }
   );
 }

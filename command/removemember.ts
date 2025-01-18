@@ -5,20 +5,20 @@ function removeMemberHandler(ctxMessage: TelegramMessage) {
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(groupId, COMMAND_HELP["removemember"], {
-      parse_mode: "MarkdownV2",
+    sendMessage(groupId, COMMAND_HELP['removemember'], {
+      parse_mode: 'MarkdownV2',
     });
     return;
   }
 
-  const { key, users } = matcher.groups;
+  const { key, users } = matcher.groups!;
 
   const billings = listBillingWithMembers({ groupId, key });
   if (billings.length === 0) {
     sendMessage(
       groupId,
       `aku tidak manggih kata kunci \`${key}\` yang elu cari :\\(`,
-      { parse_mode: "MarkdownV2" }
+      { parse_mode: 'MarkdownV2' }
     );
     return;
   }
@@ -26,27 +26,27 @@ function removeMemberHandler(ctxMessage: TelegramMessage) {
   // Error permission denied
   const billing = billings[0];
   if (String(ctxMessage.from.id) !== String(billing.adminId)) {
-    sendMessage(groupId, "punten ari didinya saha? dulur lain");
+    sendMessage(groupId, 'punten ari didinya saha? dulur lain');
     return;
   }
 
   const usernames = users
-    .split(" ")
+    .split(' ')
     .filter(Boolean)
-    .map((u) => u.replace("@", ""));
+    .map((u) => u.replace('@', ''));
 
-  const members = billing.billingMembers.filter((m) =>
+  const members = billing.members!.filter((m: BillingMember) =>
     usernames.includes(m.username)
   );
 
-  dbDeleteMany("members", {
-    username: { $in: members.map((m) => m.username) },
+  dbDeleteMany('members', {
+    username: { $in: members.map((m: BillingMember) => m.username) },
   });
 
   const userBalance = generateUserBalance(members);
   sendMessage(groupId, [
-    "berhasil ngahapus member dengan sisa saldo:",
-    "---",
-    userBalance.join("\n"),
+    'berhasil ngahapus member dengan sisa saldo:',
+    '---',
+    userBalance.join('\n'),
   ]);
 }

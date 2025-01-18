@@ -1,21 +1,21 @@
 // Get your telegram bot token from @BotFather
 const BOT_TOKEN =
-  PropertiesService.getScriptProperties().getProperty("BOT_TOKEN");
+  PropertiesService.getScriptProperties().getProperty('BOT_TOKEN');
 
 // If set, the unexpected error will be sent to the bot admin
 const BOT_ADMIN_ID =
-  PropertiesService.getScriptProperties().getProperty("BOT_ADMIN_ID");
+  PropertiesService.getScriptProperties().getProperty('BOT_ADMIN_ID');
 
 // You have to deploy your first app and then set WEBHOOK_URL from Deploy > Manage deployments > Copy Web app URL
 const WEBHOOK_URL =
-  PropertiesService.getScriptProperties().getProperty("WEBHOOK_URL");
+  PropertiesService.getScriptProperties().getProperty('WEBHOOK_URL');
 
 // Read this article to enable Atlas Data API: https://www.mongodb.com/developer/products/atlas/atlas-data-api-introduction/
 const MONGO_HOST =
-  PropertiesService.getScriptProperties().getProperty("MONGO_HOST");
+  PropertiesService.getScriptProperties().getProperty('MONGO_HOST');
 const MONGO_DATABASE =
-  PropertiesService.getScriptProperties().getProperty("MONGO_DATABASE");
+  PropertiesService.getScriptProperties().getProperty('MONGO_DATABASE');
 const MONGO_DATA_SOURCE =
-  PropertiesService.getScriptProperties().getProperty("MONGO_DATA_SOURCE");
+  PropertiesService.getScriptProperties().getProperty('MONGO_DATA_SOURCE');
 const MONGO_API_KEY =
-  PropertiesService.getScriptProperties().getProperty("MONGO_API_KEY");
+  PropertiesService.getScriptProperties().getProperty('MONGO_API_KEY');

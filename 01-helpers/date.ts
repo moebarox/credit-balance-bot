@@ -1,7 +1,7 @@
 function toMonthYear(date: Date | string): string {
-  return new Date(date).toLocaleString("id-ID", {
-    month: "long",
-    year: "numeric",
+  return new Date(date).toLocaleString('id-ID', {
+    month: 'long',
+    year: 'numeric',
   });
 }
 

@@ -6,34 +6,36 @@ function joinHandler(ctxMessage: TelegramMessage) {
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(groupId, COMMAND_HELP["join"], { parse_mode: "MarkdownV2" });
+    sendMessage(groupId, COMMAND_HELP['join'], { parse_mode: 'MarkdownV2' });
     return;
   }
 
-  const { key } = matcher.groups;
+  const { key } = matcher.groups!;
 
   const billings = listBillingWithMembers({ groupId, key });
   if (billings.length === 0) {
     sendMessage(
       groupId,
       `aku tidak manggih kata kunci \`${key}\` yang elu cari :\\(`,
-      { parse_mode: "MarkdownV2" }
+      { parse_mode: 'MarkdownV2' }
     );
     return;
   }
 
   // Check if already joined
   const billing = billings[0];
-  const isMember = billing.billingMembers.some((m) => m.username === username);
+  const isMember = billing.members!.some(
+    (m: BillingMember) => m.username === username
+  );
   if (isMember) {
-    sendMessage(groupId, "didinya sudah pernah join bosque :(");
+    sendMessage(groupId, 'didinya sudah pernah join bosque :(');
     return;
   }
 
-  dbInsertOne("members", {
+  dbInsertOne('members', {
     billingId: { $oid: billing._id },
     username,
     balance: 0,
   });
-  sendMessage(groupId, "berhasil join mamangque :D");
+  sendMessage(groupId, 'berhasil join mamangque :D');
 }

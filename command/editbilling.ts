@@ -7,32 +7,32 @@ function editBillingHandler(ctxMessage: TelegramMessage) {
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(groupId, COMMAND_HELP["editbilling"], {
-      parse_mode: "MarkdownV2",
+    sendMessage(groupId, COMMAND_HELP['editbilling'], {
+      parse_mode: 'MarkdownV2',
     });
     return;
   }
 
-  const { key, billingDate, billingAmount } = matcher.groups;
+  const { key, billingDate, billingAmount } = matcher.groups!;
 
   const billing = getBilling(groupId, key);
   if (!billing) {
     sendMessage(
       groupId,
       `aku tidak manggih kata kunci \`${key}\` yang elu cari :\\(`,
-      { parse_mode: "MarkdownV2" }
+      { parse_mode: 'MarkdownV2' }
     );
     return;
   }
 
   // Error permission denied
   if (String(ctxMessage.from.id) !== String(billing.adminId)) {
-    sendMessage(groupId, "punten ari didinya saha? dulur lain");
+    sendMessage(groupId, 'punten ari didinya saha? dulur lain');
     return;
   }
 
   dbUpdateOne(
-    "billings",
+    'billings',
     {
       key,
       groupId: {
@@ -50,5 +50,5 @@ function editBillingHandler(ctxMessage: TelegramMessage) {
     }
   );
 
-  sendMessage(groupId, "sudah diedit mamangque :D");
+  sendMessage(groupId, 'sudah diedit mamangque :D');
 }

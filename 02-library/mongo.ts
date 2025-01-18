@@ -4,10 +4,10 @@ function doMongoRequest_(action: MongoAction, payload: MongoPayload) {
     database: MONGO_DATABASE,
   };
   const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
-    method: "post" as GoogleAppsScript.URL_Fetch.HttpMethod,
-    contentType: "application/json",
+    method: 'post' as GoogleAppsScript.URL_Fetch.HttpMethod,
+    contentType: 'application/json',
     headers: {
-      "api-key": MONGO_API_KEY!,
+      'api-key': MONGO_API_KEY!,
     },
     payload: JSON.stringify({
       ...defaultPayload,
@@ -28,7 +28,7 @@ function dbFind(collection: string, filter: Record<string, any>) {
     filter,
   };
 
-  const response = doMongoRequest_("find", payload);
+  const response = doMongoRequest_('find', payload);
   return response.documents;
 }
 
@@ -38,7 +38,7 @@ function dbFindOne(collection: string, filter: Record<string, any>) {
     filter,
   };
 
-  const response = doMongoRequest_("findOne", payload);
+  const response = doMongoRequest_('findOne', payload);
   return response.document;
 }
 
@@ -48,7 +48,7 @@ function dbInsertOne(collection: string, document: Record<string, any>) {
     document,
   };
 
-  const response = doMongoRequest_("insertOne", payload);
+  const response = doMongoRequest_('insertOne', payload);
   return response.insertedId;
 }
 
@@ -58,14 +58,14 @@ function dbInsertMany(collection: string, documents: Record<string, any>[]) {
     documents,
   };
 
-  const response = doMongoRequest_("insertMany", payload);
+  const response = doMongoRequest_('insertMany', payload);
   return response;
 }
 
 function dbUpdateOne(
   collection: string,
   filter: Record<string, any>,
-  update: Record<string, any>,
+  update: Record<string, any>
 ) {
   const payload = {
     collection,
@@ -73,7 +73,7 @@ function dbUpdateOne(
     update,
   };
 
-  const response = doMongoRequest_("updateOne", payload);
+  const response = doMongoRequest_('updateOne', payload);
   return response;
 }
 
@@ -83,7 +83,7 @@ function dbDeleteMany(collection: string, filter: Record<string, any>) {
     filter,
   };
 
-  const response = doMongoRequest_("deleteMany", payload);
+  const response = doMongoRequest_('deleteMany', payload);
   return response;
 }
 
@@ -93,6 +93,6 @@ function dbAggregate(collection: string, pipeline: Record<string, any>[]) {
     pipeline,
   };
 
-  const response = doMongoRequest_("aggregate", payload);
+  const response = doMongoRequest_('aggregate', payload);
   return response.documents;
 }

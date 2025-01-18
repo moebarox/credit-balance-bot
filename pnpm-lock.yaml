@@ -8,6 +8,9 @@ devDependencies:
   '@types/google-apps-script':
     specifier: ^1.0.91
     version: 1.0.91
+  prettier:
+    specifier: ^3.2.5
+    version: 3.4.2
   typescript:
     specifier: ^5.7.3
     version: 5.7.3
@@ -16,6 +19,12 @@ packages:
 
   /@types/google-apps-script@1.0.91:
     resolution: {integrity: sha512-si93/GKuhaMPgbYUnGpU4jzqkid4+zxHi+Sm0IyGUJ/OPha5sM/hklGEyosSxsoE5Qkla3f7O64rJ05NdRQpJA==}
+    dev: true
+
+  /prettier@3.4.2:
+    resolution: {integrity: sha512-e9MewbtFo+Fevyuxn/4rrcDAaq0IYxPGLvObpQjiZBMAzB9IGmzlnG9RZy3FFas+eBMu2vA0CszMeduow5dIuQ==}
+    engines: {node: '>=14'}
+    hasBin: true
     dev: true
 
   /typescript@5.7.3:

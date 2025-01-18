@@ -1,4 +1,12 @@
-type MongoAction = "insertOne" | "insertMany" | "find" | "findOne" | "updateOne" | "deleteOne" | "deleteMany" | "aggregate";
+type MongoAction =
+  | 'insertOne'
+  | 'insertMany'
+  | 'find'
+  | 'findOne'
+  | 'updateOne'
+  | 'deleteOne'
+  | 'deleteMany'
+  | 'aggregate';
 
 type MongoPayload = {
   collection: string;
@@ -7,4 +15,12 @@ type MongoPayload = {
   documents?: Record<string, any>[];
   update?: Record<string, any>;
   pipeline?: Record<string, any>[];
-}
+};
+
+type MongoObjectID = {
+  $oid: string;
+};
+
+type MongoNumberLong = {
+  $numberLong: string;
+};

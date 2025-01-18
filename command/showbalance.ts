@@ -6,8 +6,8 @@ function showBalanceHandler(ctxMessage: TelegramMessage) {
   // Print all credit balance within the current group
   if (!text) {
     const billings = listBillingWithMembers({ groupId });
-    billings.forEach((billing) => {
-      const message = generateCreditBalance(billing, billing.billingMembers);
+    billings.forEach((billing: Billing) => {
+      const message = generateCreditBalance(billing, billing.members!);
       sendMessage(groupId, message);
     });
     return;
@@ -15,13 +15,13 @@ function showBalanceHandler(ctxMessage: TelegramMessage) {
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(groupId, COMMAND_HELP["showbalance"], {
-      parse_mode: "MarkdownV2",
+    sendMessage(groupId, COMMAND_HELP['showbalance'], {
+      parse_mode: 'MarkdownV2',
     });
     return;
   }
 
-  const { key } = matcher.groups;
+  const { key } = matcher.groups!;
   const billings = listBillingWithMembers({ groupId, key });
 
   // Error not found
@@ -29,14 +29,11 @@ function showBalanceHandler(ctxMessage: TelegramMessage) {
     sendMessage(
       groupId,
       `aku tidak manggih kata kunci \`${key}\` yang elu cari :\\(`,
-      { parse_mode: "MarkdownV2" }
+      { parse_mode: 'MarkdownV2' }
     );
     return;
   }
 
-  const message = generateCreditBalance(
-    billings[0],
-    billings[0].billingMembers
-  );
+  const message = generateCreditBalance(billings[0], billings[0].members!);
   sendMessage(groupId, message);
 }

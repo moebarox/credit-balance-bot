@@ -8,7 +8,7 @@ function billingScheduler() {
   const deduction = [];
   const reminder = [];
 
-  const billings = dbAggregate("billings", [
+  const billings: Billing[] = dbAggregate('billings', [
     {
       $match: {
         billingDate: {
@@ -18,10 +18,10 @@ function billingScheduler() {
     },
     {
       $lookup: {
-        from: "members",
-        localField: "_id",
-        foreignField: "billingId",
-        as: "billingMembers",
+        from: 'members',
+        localField: '_id',
+        foreignField: 'billingId',
+        as: 'members',
       },
     },
   ]);
@@ -45,20 +45,20 @@ function billingScheduler() {
   for (let i = 0; i < reminder.length; i += 1) {
     const billing = reminder[i];
     const billingAmount = Math.round(
-      billing.billingAmount / billing.billingMembers.length
+      billing.billingAmount / billing.members!.length
     );
-    const insufficientBalanceMembers = billing.billingMembers.filter(
-      (m) => m.balance < billingAmount
+    const insufficientBalanceMembers = billing.members!.filter(
+      (m: BillingMember) => m.balance < billingAmount
     );
 
     if (insufficientBalanceMembers.length) {
       const userBalance = generateUserBalance(insufficientBalanceMembers);
       sendMessage(billing.groupId, [
-        "saldo mamang jigana kurang yeuh buat tagihan besok :(",
-        "---",
-        userBalance.join("\n"),
-        "---",
-        "rada di topup atuh ya ditunggu sebelum besok",
+        'saldo mamang jigana kurang yeuh buat tagihan besok :(',
+        '---',
+        userBalance.join('\n'),
+        '---',
+        'rada di topup atuh ya ditunggu sebelum besok',
       ]);
     }
   }
@@ -67,13 +67,13 @@ function billingScheduler() {
   for (let i = 0; i < deduction.length; i += 1) {
     const billing = deduction[i];
     const billingAmount = Math.round(
-      billing.billingAmount / billing.billingMembers.length
+      billing.billingAmount / billing.members!.length
     );
-    updateBalance(billing, ["all"], -billingAmount);
+    updateBalance(billing, ['all'], -billingAmount);
   }
 
   if (deduction.length > 0) {
-    const updatedBillings = dbAggregate("billings", [
+    const updatedBillings: Billing[] = dbAggregate('billings', [
       {
         $match: {
           _id: {
@@ -85,17 +85,17 @@ function billingScheduler() {
       },
       {
         $lookup: {
-          from: "members",
-          localField: "_id",
-          foreignField: "billingId",
-          as: "billingMembers",
+          from: 'members',
+          localField: '_id',
+          foreignField: 'billingId',
+          as: 'members',
         },
       },
     ]);
 
     for (let i = 0; i < updatedBillings.length; i += 1) {
       const billing = updatedBillings[i];
-      const message = generateCreditBalance(billing, billing.billingMembers);
+      const message = generateCreditBalance(billing, billing.members);
       sendMessage(billing.groupId, message);
     }
   }

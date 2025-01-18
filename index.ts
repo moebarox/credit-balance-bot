@@ -13,31 +13,31 @@ function doPost(e: GoogleAppsScript.Events.DoPost) {
 
   try {
     switch (getCommand_(data.message.text)) {
-      case "about":
+      case 'about':
         aboutHandler(data);
         break;
-      case "newbilling":
+      case 'newbilling':
         newBillingHandler(data.message);
         break;
-      case "editbilling":
+      case 'editbilling':
         editBillingHandler(data.message);
         break;
-      case "deletebilling":
+      case 'deletebilling':
         deleteBillingHandler(data.message);
         break;
-      case "join":
+      case 'join':
         joinHandler(data.message);
         break;
-      case "showbalance":
+      case 'showbalance':
         showBalanceHandler(data.message);
         break;
-      case "editbalance":
+      case 'editbalance':
         editBalanceHandler(data.message);
         break;
-      case "addmember":
+      case 'addmember':
         addMemberHandler(data.message);
         break;
-      case "removemember":
+      case 'removemember':
         removeMemberHandler(data.message);
         break;
       default:
@@ -56,7 +56,7 @@ function debug() {
       from: {
         id: BOT_ADMIN_ID,
       },
-      text: "/showbalance",
+      text: '/showbalance',
     },
   };
 

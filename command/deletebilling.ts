@@ -5,20 +5,20 @@ function deleteBillingHandler(ctxMessage: TelegramMessage) {
 
   // Error invalid format
   if (!matcher) {
-    sendMessage(groupId, COMMAND_HELP["deletebilling"], {
-      parse_mode: "MarkdownV2",
+    sendMessage(groupId, COMMAND_HELP['deletebilling'], {
+      parse_mode: 'MarkdownV2',
     });
     return;
   }
 
-  const { key } = matcher.groups;
+  const { key } = matcher.groups!;
 
   const billings = listBillingWithMembers({ groupId, key });
   if (billings.length === 0) {
     sendMessage(
       groupId,
       `aku tidak manggih kata kunci \`${key}\` yang elu cari :\\(`,
-      { parse_mode: "MarkdownV2" }
+      { parse_mode: 'MarkdownV2' }
     );
     return;
   }
@@ -27,23 +27,23 @@ function deleteBillingHandler(ctxMessage: TelegramMessage) {
 
   // Error permission denied
   if (String(ctxMessage.from.id) !== String(billing.adminId)) {
-    sendMessage(groupId, "punten ari didinya saha? dulur lain");
+    sendMessage(groupId, 'punten ari didinya saha? dulur lain');
     return;
   }
 
-  dbDeleteMany("billings", {
+  dbDeleteMany('billings', {
     _id: { $oid: billing._id },
   });
 
-  dbDeleteMany("members", {
+  dbDeleteMany('members', {
     billingId: { $oid: billing._id },
   });
 
   sendMessage(groupId, [
-    "parantos dihapus mamangque :(",
-    "tapi jang jaga-jaga, ieu saldo terakhir nya",
+    'parantos dihapus mamangque :(',
+    'tapi jang jaga-jaga, ieu saldo terakhir nya',
   ]);
 
-  const message = generateCreditBalance(billing, billing.billingMembers);
+  const message = generateCreditBalance(billing, billing.members!);
   sendMessage(groupId, message);
 }
