@@ -31,7 +31,7 @@ function billingScheduler() {
     let actualDate = billing.billingDate;
 
     if (today.getMonth() === 1 && billing.billingDate > 28) {
-      actualDate = isLeapYear(today) ? 29 : 28;
+      actualDate = DateHelper.isLeapYear(today) ? 29 : 28;
     }
 
     if (actualDate === currentDate) {
@@ -53,7 +53,7 @@ function billingScheduler() {
 
     if (insufficientBalanceMembers.length) {
       const userBalance = generateUserBalance(insufficientBalanceMembers);
-      sendMessage(billing.groupId, [
+      sendMessage(billing.groupId as number, [
         'saldo mamang jigana kurang yeuh buat tagihan besok :(',
         '---',
         userBalance.join('\n'),
@@ -95,8 +95,8 @@ function billingScheduler() {
 
     for (let i = 0; i < updatedBillings.length; i += 1) {
       const billing = updatedBillings[i];
-      const message = generateCreditBalance(billing, billing.members);
-      sendMessage(billing.groupId, message);
+      const message = generateCreditBalance(billing, billing.members!);
+      sendMessage(billing.groupId as number, message);
     }
   }
 }
