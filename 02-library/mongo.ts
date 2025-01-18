@@ -1,4 +1,4 @@
-function doMongoRequest_(action: MongoAction, payload: MongoPayload) {
+function doMongoRequest_(action: DataAPIAction, payload: DataAPIPayload) {
   const defaultPayload = {
     dataSource: MONGO_DATA_SOURCE,
     database: MONGO_DATABASE,

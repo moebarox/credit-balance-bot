@@ -1,4 +1,4 @@
-type MongoAction =
+type DataAPIAction =
   | 'insertOne'
   | 'insertMany'
   | 'find'
@@ -8,7 +8,7 @@ type MongoAction =
   | 'deleteMany'
   | 'aggregate';
 
-type MongoPayload = {
+type DataAPIPayload = {
   collection: string;
   filter?: Record<string, any>;
   document?: Record<string, any>;
