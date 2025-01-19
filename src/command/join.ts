@@ -34,11 +34,13 @@ function joinHandler(ctxMessage: TelegramMessage) {
     return;
   }
 
-  MongoDB.insertOne('members', {
-    billingId: { $oid: billing._id },
-    username,
-    balance: 0,
-  });
+  Credit.addMembers([
+    {
+      billingId: { $oid: String(billing._id) },
+      username,
+      balance: 0,
+    },
+  ]);
   Bot.sendMessage(groupId, 'berhasil join mamangque :D');
 }
 

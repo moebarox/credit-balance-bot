@@ -108,6 +108,10 @@ namespace Credit {
 
     return { success, failed };
   }
+
+  export function addMembers(members: BillingMember[]) {
+    MongoDB.insertMany('members', members);
+  }
 }
 
 (globalThis as any).Credit = Credit;

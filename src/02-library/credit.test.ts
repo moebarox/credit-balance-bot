@@ -8,6 +8,7 @@ describe('Credit library', () => {
       findOne: jest.fn(),
       find: jest.fn(),
       updateOne: jest.fn(),
+      insertMany: jest.fn(),
     };
 
     // Mock NumberHelper
@@ -232,6 +233,36 @@ describe('Credit library', () => {
         success: [{ username: 'user1', balance: 100000 }],
         failed: [{ username: 'nonexistent', code: 'USER_NOT_FOUND' }],
       });
+    });
+  });
+
+  describe('addMembers', () => {
+    it('should insert multiple members into the database', () => {
+      const mockMembers = [
+        {
+          billingId: { $oid: '123' },
+          username: 'user1',
+          balance: 0,
+        },
+        {
+          billingId: { $oid: '123' },
+          username: 'user2',
+          balance: 0,
+        },
+      ];
+
+      globalThis.Credit.addMembers(mockMembers);
+
+      expect(globalThis.MongoDB.insertMany).toHaveBeenCalledWith(
+        'members',
+        mockMembers
+      );
+    });
+
+    it('should handle empty members array', () => {
+      globalThis.Credit.addMembers([]);
+
+      expect(globalThis.MongoDB.insertMany).toHaveBeenCalledWith('members', []);
     });
   });
 });

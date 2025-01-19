@@ -4,13 +4,13 @@ describe('Join command', () => {
   let mockSendMessage: jest.Mock;
   let mockGetMessage: jest.Mock;
   let mockListBillingWithMembers: jest.Mock;
-  let mockInsertOne: jest.Mock;
+  let mockAddMembers: jest.Mock;
 
   beforeEach(() => {
     mockSendMessage = jest.fn();
     mockGetMessage = jest.fn();
     mockListBillingWithMembers = jest.fn();
-    mockInsertOne = jest.fn();
+    mockAddMembers = jest.fn();
 
     (globalThis as any).Bot = {
       sendMessage: mockSendMessage,
@@ -18,9 +18,7 @@ describe('Join command', () => {
     };
     (globalThis as any).Credit = {
       listBillingWithMembers: mockListBillingWithMembers,
-    };
-    (globalThis as any).MongoDB = {
-      insertOne: mockInsertOne,
+      addMembers: mockAddMembers,
     };
     (globalThis as any).COMMAND_HELP = {
       join: 'Usage: /join <key>',
@@ -116,11 +114,13 @@ describe('Join command', () => {
 
       globalThis.joinHandler(createMessage('/join wifi'));
 
-      expect(mockInsertOne).toHaveBeenCalledWith('members', {
-        billingId: { $oid: '123' },
-        username: 'testuser',
-        balance: 0,
-      });
+      expect(mockAddMembers).toHaveBeenCalledWith([
+        {
+          billingId: { $oid: '123' },
+          username: 'testuser',
+          balance: 0,
+        },
+      ]);
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
         'berhasil join mamangque :D'

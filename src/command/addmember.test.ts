@@ -4,13 +4,13 @@ describe('AddMember command', () => {
   let mockSendMessage: jest.Mock;
   let mockGetMessage: jest.Mock;
   let mockListBillingWithMembers: jest.Mock;
-  let mockInsertMany: jest.Mock;
+  let mockAddMembers: jest.Mock;
 
   beforeEach(() => {
     mockSendMessage = jest.fn();
     mockGetMessage = jest.fn();
     mockListBillingWithMembers = jest.fn();
-    mockInsertMany = jest.fn();
+    mockAddMembers = jest.fn();
 
     (globalThis as any).Bot = {
       sendMessage: mockSendMessage,
@@ -18,9 +18,7 @@ describe('AddMember command', () => {
     };
     (globalThis as any).Credit = {
       listBillingWithMembers: mockListBillingWithMembers,
-    };
-    (globalThis as any).MongoDB = {
-      insertMany: mockInsertMany,
+      addMembers: mockAddMembers,
     };
     (globalThis as any).COMMAND_HELP = {
       addmember: 'Usage: /addmember <key> <@user1> <@user2>',
@@ -112,6 +110,28 @@ describe('AddMember command', () => {
   });
 
   describe('member management', () => {
+    it('should show error when all users are already members', () => {
+      mockGetMessage.mockReturnValue('wifi @user1 @user2');
+      mockListBillingWithMembers.mockReturnValue([
+        createBilling({
+          members: [
+            { username: 'user1', balance: 0 },
+            { username: 'user2', balance: 0 },
+          ],
+        }),
+      ]);
+
+      globalThis.addMemberHandler(
+        createMessage('/addmember wifi @user1 @user2')
+      );
+
+      expect(mockSendMessage).toHaveBeenCalledWith(
+        123456,
+        'eta mah atuh geus join kabeh wa :('
+      );
+      expect(mockAddMembers).not.toHaveBeenCalled();
+    });
+
     it('should add new members successfully', () => {
       mockGetMessage.mockReturnValue('wifi @user1 @user2');
       mockListBillingWithMembers.mockReturnValue([createBilling()]);
@@ -120,7 +140,7 @@ describe('AddMember command', () => {
         createMessage('/addmember wifi @user1 @user2')
       );
 
-      expect(mockInsertMany).toHaveBeenCalledWith('members', [
+      expect(mockAddMembers).toHaveBeenCalledWith([
         {
           billingId: { $oid: '123' },
           username: 'user1',
@@ -150,7 +170,7 @@ describe('AddMember command', () => {
         createMessage('/addmember wifi @user1 @existinguser')
       );
 
-      expect(mockInsertMany).toHaveBeenCalledWith('members', [
+      expect(mockAddMembers).toHaveBeenCalledWith([
         {
           billingId: { $oid: '123' },
           username: 'user1',
@@ -167,7 +187,7 @@ describe('AddMember command', () => {
         createMessage('/addmember wifi   @user1    @user2')
       );
 
-      expect(mockInsertMany).toHaveBeenCalledWith('members', [
+      expect(mockAddMembers).toHaveBeenCalledWith([
         {
           billingId: { $oid: '123' },
           username: 'user1',
@@ -189,7 +209,7 @@ describe('AddMember command', () => {
         createMessage('/addmember wifi user1 @user2')
       );
 
-      expect(mockInsertMany).toHaveBeenCalledWith('members', [
+      expect(mockAddMembers).toHaveBeenCalledWith([
         {
           billingId: { $oid: '123' },
           username: 'user1',

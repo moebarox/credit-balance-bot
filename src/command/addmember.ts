@@ -57,7 +57,13 @@ function addMemberHandler(ctxMessage: TelegramMessage) {
     ];
   }, []);
 
-  MongoDB.insertMany('members', payload);
+  if (payload.length === 0) {
+    Bot.sendMessage(groupId, 'eta mah atuh geus join kabeh wa :(');
+    return;
+  }
+
+  Credit.addMembers(payload);
+
   Bot.sendMessage(groupId, 'berhasil join mamangque :D');
 }
 
