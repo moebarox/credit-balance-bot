@@ -1,5 +1,6 @@
 export const createMockHandlers = () => {
   const mockSendMessage = jest.fn();
+  const mockGetMessage = jest.fn();
   const mockGetCommand = jest.fn();
   const mockAboutHandler = jest.fn();
   const mockNewBillingHandler = jest.fn();
@@ -12,6 +13,7 @@ export const createMockHandlers = () => {
   const mockRemoveMemberHandler = jest.fn();
   const mockGetBilling = jest.fn();
   const mockListBillingWithMembers = jest.fn();
+  const mockAddMembers = jest.fn();
   const mockUpdateBalance = jest.fn();
   const mockGenerateUserBalance = jest.fn();
   const mockGenerateCreditBalance = jest.fn();
@@ -23,6 +25,7 @@ export const createMockHandlers = () => {
 
   return {
     mockSendMessage,
+    mockGetMessage,
     mockGetCommand,
     mockAboutHandler,
     mockNewBillingHandler,
@@ -35,6 +38,7 @@ export const createMockHandlers = () => {
     mockRemoveMemberHandler,
     mockGetBilling,
     mockListBillingWithMembers,
+    mockAddMembers,
     mockUpdateBalance,
     mockGenerateUserBalance,
     mockGenerateCreditBalance,
@@ -52,11 +56,12 @@ export const setupGlobalMocks = (
   (globalThis as any).Bot = {
     sendMessage: mocks.mockSendMessage,
     getCommand_: mocks.mockGetCommand,
-    getMessage_: mocks.mockGetCommand,
+    getMessage_: mocks.mockGetMessage,
   };
   (globalThis as any).Credit = {
     getBilling: mocks.mockGetBilling,
     listBillingWithMembers: mocks.mockListBillingWithMembers,
+    addMembers: mocks.mockAddMembers,
     updateBalance: mocks.mockUpdateBalance,
     generateUserBalance: mocks.mockGenerateUserBalance,
     generateCreditBalance: mocks.mockGenerateCreditBalance,
@@ -83,18 +88,23 @@ export const setupGlobalMocks = (
 
 export const createTelegramMessage = (
   text: string,
-  overrides = {}
+  overrides: {
+    chat?: Partial<TelegramMessage['chat']>;
+    from?: Partial<TelegramMessage['from']>;
+    text?: string;
+  } = {}
 ): TelegramMessage => ({
   chat: {
     id: 123456,
     type: 'group',
+    ...(overrides.chat || {}),
   },
   from: {
     id: 789,
     username: 'testuser',
+    ...(overrides.from || {}),
   },
   text,
-  ...overrides,
 });
 
 export const createBilling = (overrides = {}): Billing => ({
@@ -107,10 +117,3 @@ export const createBilling = (overrides = {}): Billing => ({
   members: [],
   ...overrides,
 });
-
-export const createPostEvent = (data: any): GoogleAppsScript.Events.DoPost =>
-  ({
-    postData: {
-      contents: JSON.stringify(data),
-    },
-  }) as GoogleAppsScript.Events.DoPost;

@@ -1,4 +1,8 @@
 import './deletebilling';
+import {
+  createTelegramMessage,
+  createBilling,
+} from '../01-helpers/tests/utils';
 
 describe('DeleteBilling command', () => {
   let mockSendMessage: jest.Mock;
@@ -28,33 +32,10 @@ describe('DeleteBilling command', () => {
     };
   });
 
-  const createMessage = (text: string): TelegramMessage => ({
-    chat: {
-      id: 123456,
-      type: 'group',
-    },
-    from: {
-      id: 789,
-      username: 'testuser',
-    },
-    text,
-  });
-
-  const createBilling = (overrides = {}): Billing => ({
-    _id: '123',
-    key: 'wifi',
-    billingAmount: 100000,
-    billingDate: 1,
-    adminId: 789,
-    groupId: 123456,
-    members: [],
-    ...overrides,
-  });
-
   describe('input validation', () => {
     it('should show help message for empty command', () => {
       mockGetMessage.mockReturnValue('');
-      globalThis.deleteBillingHandler(createMessage('/deletebilling'));
+      globalThis.deleteBillingHandler(createTelegramMessage('/deletebilling'));
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -66,7 +47,7 @@ describe('DeleteBilling command', () => {
     it('should show help message for invalid format', () => {
       mockGetMessage.mockReturnValue('wifi extra');
       globalThis.deleteBillingHandler(
-        createMessage('/deletebilling wifi extra')
+        createTelegramMessage('/deletebilling wifi extra')
       );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
@@ -82,7 +63,9 @@ describe('DeleteBilling command', () => {
       mockGetMessage.mockReturnValue('wifi');
       mockListBillingWithMembers.mockReturnValue([]);
 
-      globalThis.deleteBillingHandler(createMessage('/deletebilling wifi'));
+      globalThis.deleteBillingHandler(
+        createTelegramMessage('/deletebilling wifi')
+      );
 
       expect(mockListBillingWithMembers).toHaveBeenCalledWith({
         groupId: 123456,
@@ -101,7 +84,9 @@ describe('DeleteBilling command', () => {
         createBilling({ adminId: 999 }), // Different admin ID
       ]);
 
-      globalThis.deleteBillingHandler(createMessage('/deletebilling wifi'));
+      globalThis.deleteBillingHandler(
+        createTelegramMessage('/deletebilling wifi')
+      );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -122,7 +107,9 @@ describe('DeleteBilling command', () => {
       mockListBillingWithMembers.mockReturnValue([mockBilling]);
       mockGenerateCreditBalance.mockReturnValue(['balance info']);
 
-      globalThis.deleteBillingHandler(createMessage('/deletebilling wifi'));
+      globalThis.deleteBillingHandler(
+        createTelegramMessage('/deletebilling wifi')
+      );
 
       // Should delete billing
       expect(mockDeleteBilling).toHaveBeenCalledWith(String(mockBilling._id));
@@ -148,7 +135,9 @@ describe('DeleteBilling command', () => {
       mockListBillingWithMembers.mockReturnValue([mockBilling]);
       mockGenerateCreditBalance.mockReturnValue(['balance info']);
 
-      globalThis.deleteBillingHandler(createMessage('/deletebilling wifi'));
+      globalThis.deleteBillingHandler(
+        createTelegramMessage('/deletebilling wifi')
+      );
 
       expect(mockDeleteBilling).toHaveBeenCalledWith(String(mockBilling._id));
       expect(mockGenerateCreditBalance).toHaveBeenCalledWith(mockBilling, []);

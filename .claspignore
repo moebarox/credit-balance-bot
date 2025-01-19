@@ -3,5 +3,6 @@
 !appsscript.json
 !src/**/*.ts
 
+**/tests/*.ts
 **/*.test.ts
 **/*.d.ts

@@ -1,4 +1,8 @@
 import './removemember';
+import {
+  createTelegramMessage,
+  createBilling,
+} from '../01-helpers/tests/utils';
 
 describe('RemoveMember command', () => {
   let mockSendMessage: jest.Mock;
@@ -28,33 +32,10 @@ describe('RemoveMember command', () => {
     };
   });
 
-  const createMessage = (text: string): TelegramMessage => ({
-    chat: {
-      id: 123456,
-      type: 'group',
-    },
-    from: {
-      id: 789,
-      username: 'testuser',
-    },
-    text,
-  });
-
-  const createBilling = (overrides = {}): Billing => ({
-    _id: '123',
-    key: 'wifi',
-    billingAmount: 100000,
-    billingDate: 1,
-    adminId: 789,
-    groupId: 123456,
-    members: [],
-    ...overrides,
-  });
-
   describe('input validation', () => {
     it('should show help message for empty command', () => {
       mockGetMessage.mockReturnValue('');
-      globalThis.removeMemberHandler(createMessage('/removemember'));
+      globalThis.removeMemberHandler(createTelegramMessage('/removemember'));
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -65,7 +46,9 @@ describe('RemoveMember command', () => {
 
     it('should show help message for missing users', () => {
       mockGetMessage.mockReturnValue('wifi');
-      globalThis.removeMemberHandler(createMessage('/removemember wifi'));
+      globalThis.removeMemberHandler(
+        createTelegramMessage('/removemember wifi')
+      );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -81,7 +64,7 @@ describe('RemoveMember command', () => {
       mockListBillingWithMembers.mockReturnValue([]);
 
       globalThis.removeMemberHandler(
-        createMessage('/removemember wifi @user1')
+        createTelegramMessage('/removemember wifi @user1')
       );
 
       expect(mockListBillingWithMembers).toHaveBeenCalledWith({
@@ -102,7 +85,7 @@ describe('RemoveMember command', () => {
       ]);
 
       globalThis.removeMemberHandler(
-        createMessage('/removemember wifi @user1')
+        createTelegramMessage('/removemember wifi @user1')
       );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
@@ -126,7 +109,7 @@ describe('RemoveMember command', () => {
       ]);
 
       globalThis.removeMemberHandler(
-        createMessage('/removemember wifi @user1 @user2')
+        createTelegramMessage('/removemember wifi @user1 @user2')
       );
 
       expect(mockDeleteMembers).toHaveBeenCalledWith(members);
@@ -143,7 +126,9 @@ describe('RemoveMember command', () => {
       mockListBillingWithMembers.mockReturnValue([createBilling({ members })]);
       mockGenerateUserBalance.mockReturnValue(['@user1: Rp 1.000']);
 
-      globalThis.removeMemberHandler(createMessage('/removemember wifi user1'));
+      globalThis.removeMemberHandler(
+        createTelegramMessage('/removemember wifi user1')
+      );
 
       expect(mockDeleteMembers).toHaveBeenCalledWith(members);
     });
@@ -161,7 +146,7 @@ describe('RemoveMember command', () => {
       ]);
 
       globalThis.removeMemberHandler(
-        createMessage('/removemember wifi user1   user2')
+        createTelegramMessage('/removemember wifi user1   user2')
       );
 
       expect(mockDeleteMembers).toHaveBeenCalledWith(members);

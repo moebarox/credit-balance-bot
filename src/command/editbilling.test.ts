@@ -1,4 +1,8 @@
 import './editbilling';
+import {
+  createTelegramMessage,
+  createBilling,
+} from '../01-helpers/tests/utils';
 
 describe('EditBilling command', () => {
   let mockSendMessage: jest.Mock;
@@ -25,33 +29,10 @@ describe('EditBilling command', () => {
     };
   });
 
-  const createMessage = (text: string): TelegramMessage => ({
-    chat: {
-      id: 123456,
-      type: 'group',
-    },
-    from: {
-      id: 789,
-      username: 'testuser',
-    },
-    text,
-  });
-
-  const createBilling = (overrides = {}): Billing => ({
-    _id: '123',
-    key: 'wifi',
-    billingAmount: 100000,
-    billingDate: 1,
-    adminId: 789,
-    groupId: 123456,
-    members: [],
-    ...overrides,
-  });
-
   describe('input validation', () => {
     it('should show help message for invalid format', () => {
       mockGetMessage.mockReturnValue('wifi');
-      globalThis.editBillingHandler(createMessage('/editbilling wifi'));
+      globalThis.editBillingHandler(createTelegramMessage('/editbilling wifi'));
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -62,7 +43,9 @@ describe('EditBilling command', () => {
 
     it('should show help message for missing amount', () => {
       mockGetMessage.mockReturnValue('wifi 1');
-      globalThis.editBillingHandler(createMessage('/editbilling wifi 1'));
+      globalThis.editBillingHandler(
+        createTelegramMessage('/editbilling wifi 1')
+      );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -73,7 +56,9 @@ describe('EditBilling command', () => {
 
     it('should show help message for non-numeric values', () => {
       mockGetMessage.mockReturnValue('wifi abc def');
-      globalThis.editBillingHandler(createMessage('/editbilling wifi abc def'));
+      globalThis.editBillingHandler(
+        createTelegramMessage('/editbilling wifi abc def')
+      );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -89,7 +74,7 @@ describe('EditBilling command', () => {
       mockGetBilling.mockReturnValue(null);
 
       globalThis.editBillingHandler(
-        createMessage('/editbilling wifi 1 100000')
+        createTelegramMessage('/editbilling wifi 1 100000')
       );
 
       expect(mockGetBilling).toHaveBeenCalledWith(123456, 'wifi');
@@ -105,7 +90,7 @@ describe('EditBilling command', () => {
       mockGetBilling.mockReturnValue(createBilling({ adminId: 999 })); // Different admin ID
 
       globalThis.editBillingHandler(
-        createMessage('/editbilling wifi 1 100000')
+        createTelegramMessage('/editbilling wifi 1 100000')
       );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
@@ -121,7 +106,7 @@ describe('EditBilling command', () => {
       mockGetBilling.mockReturnValue(createBilling());
 
       globalThis.editBillingHandler(
-        createMessage('/editbilling wifi 15 150000')
+        createTelegramMessage('/editbilling wifi 15 150000')
       );
 
       expect(mockUpdateBilling).toHaveBeenCalledWith({

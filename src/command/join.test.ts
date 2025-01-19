@@ -1,4 +1,8 @@
 import './join';
+import {
+  createTelegramMessage,
+  createBilling,
+} from '../01-helpers/tests/utils';
 
 describe('Join command', () => {
   let mockSendMessage: jest.Mock;
@@ -25,33 +29,10 @@ describe('Join command', () => {
     };
   });
 
-  const createMessage = (text: string): TelegramMessage => ({
-    chat: {
-      id: 123456,
-      type: 'group',
-    },
-    from: {
-      id: 789,
-      username: 'testuser',
-    },
-    text,
-  });
-
-  const createBilling = (overrides = {}): Billing => ({
-    _id: '123',
-    key: 'wifi',
-    billingAmount: 100000,
-    billingDate: 1,
-    adminId: 789,
-    groupId: 123456,
-    members: [],
-    ...overrides,
-  });
-
   describe('input validation', () => {
     it('should show help message for empty command', () => {
       mockGetMessage.mockReturnValue('');
-      globalThis.joinHandler(createMessage('/join'));
+      globalThis.joinHandler(createTelegramMessage('/join'));
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -62,7 +43,7 @@ describe('Join command', () => {
 
     it('should show help message for invalid format', () => {
       mockGetMessage.mockReturnValue('wifi test');
-      globalThis.joinHandler(createMessage('/join wifi test'));
+      globalThis.joinHandler(createTelegramMessage('/join wifi test'));
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -77,7 +58,7 @@ describe('Join command', () => {
       mockGetMessage.mockReturnValue('wifi');
       mockListBillingWithMembers.mockReturnValue([]);
 
-      globalThis.joinHandler(createMessage('/join wifi'));
+      globalThis.joinHandler(createTelegramMessage('/join wifi'));
 
       expect(mockListBillingWithMembers).toHaveBeenCalledWith({
         groupId: 123456,
@@ -98,7 +79,7 @@ describe('Join command', () => {
         }),
       ]);
 
-      globalThis.joinHandler(createMessage('/join wifi'));
+      globalThis.joinHandler(createTelegramMessage('/join wifi'));
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -112,7 +93,7 @@ describe('Join command', () => {
       mockGetMessage.mockReturnValue('wifi');
       mockListBillingWithMembers.mockReturnValue([createBilling()]);
 
-      globalThis.joinHandler(createMessage('/join wifi'));
+      globalThis.joinHandler(createTelegramMessage('/join wifi'));
 
       expect(mockAddMembers).toHaveBeenCalledWith([
         {

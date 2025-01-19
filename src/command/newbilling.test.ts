@@ -1,4 +1,5 @@
 import './newbilling';
+import { createTelegramMessage } from '../01-helpers/tests/utils';
 
 describe('NewBilling command', () => {
   let mockSendMessage: jest.Mock;
@@ -28,26 +29,13 @@ describe('NewBilling command', () => {
     };
   });
 
-  const createMessage = (
-    text: string,
-    chatType: 'group' | 'supergroup' | 'private' = 'group'
-  ): TelegramMessage => ({
-    chat: {
-      id: 123456,
-      type: chatType,
-    },
-    from: {
-      id: 789,
-      username: 'testuser',
-    },
-    text,
-  });
-
   describe('room validation', () => {
     it('should show error for private chat', () => {
       mockGetMessage.mockReturnValue('wifi 1 100000');
       globalThis.newBillingHandler(
-        createMessage('/newbilling wifi 1 100000', 'private')
+        createTelegramMessage('/newbilling wifi 1 100000', {
+          chat: { type: 'private' },
+        })
       );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
@@ -63,7 +51,9 @@ describe('NewBilling command', () => {
       mockCreateBilling.mockReturnValue('new_billing_id');
 
       globalThis.newBillingHandler(
-        createMessage('/newbilling wifi 1 100000', 'supergroup')
+        createTelegramMessage('/newbilling wifi 1 100000', {
+          chat: { type: 'supergroup' },
+        })
       );
 
       expect(mockCreateBilling).toHaveBeenCalled();
@@ -73,7 +63,7 @@ describe('NewBilling command', () => {
   describe('input validation', () => {
     it('should show help message for empty command', () => {
       mockGetMessage.mockReturnValue('');
-      globalThis.newBillingHandler(createMessage('/newbilling'));
+      globalThis.newBillingHandler(createTelegramMessage('/newbilling'));
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -84,7 +74,7 @@ describe('NewBilling command', () => {
 
     it('should show help message for missing amount', () => {
       mockGetMessage.mockReturnValue('wifi 1');
-      globalThis.newBillingHandler(createMessage('/newbilling wifi 1'));
+      globalThis.newBillingHandler(createTelegramMessage('/newbilling wifi 1'));
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -95,7 +85,9 @@ describe('NewBilling command', () => {
 
     it('should show help message for non-numeric values', () => {
       mockGetMessage.mockReturnValue('wifi abc def');
-      globalThis.newBillingHandler(createMessage('/newbilling wifi abc def'));
+      globalThis.newBillingHandler(
+        createTelegramMessage('/newbilling wifi abc def')
+      );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -110,7 +102,9 @@ describe('NewBilling command', () => {
       mockGetMessage.mockReturnValue('wifi 1 100000');
       mockGetBilling.mockReturnValue({ key: 'wifi' });
 
-      globalThis.newBillingHandler(createMessage('/newbilling wifi 1 100000'));
+      globalThis.newBillingHandler(
+        createTelegramMessage('/newbilling wifi 1 100000')
+      );
 
       expect(mockGetBilling).toHaveBeenCalledWith(123456, 'wifi');
       expect(mockSendMessage).toHaveBeenCalledWith(
@@ -127,7 +121,9 @@ describe('NewBilling command', () => {
       mockGetBilling.mockReturnValue(null);
       mockCreateBilling.mockReturnValue('new_billing_id');
 
-      globalThis.newBillingHandler(createMessage('/newbilling wifi 15 150000'));
+      globalThis.newBillingHandler(
+        createTelegramMessage('/newbilling wifi 15 150000')
+      );
 
       expect(mockCreateBilling).toHaveBeenCalledWith({
         key: 'wifi',

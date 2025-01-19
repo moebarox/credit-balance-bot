@@ -1,4 +1,5 @@
 import './billing';
+import { createBilling } from '../01-helpers/tests/utils';
 
 describe('Billing Scheduler', () => {
   let mockSendMessage: jest.Mock;
@@ -38,17 +39,6 @@ describe('Billing Scheduler', () => {
     // Restore original Date
     globalThis.Date = originalDate;
     jest.useRealTimers();
-  });
-
-  const createBilling = (overrides = {}): Billing => ({
-    _id: '123',
-    key: 'wifi',
-    billingAmount: 100000,
-    billingDate: 1,
-    adminId: 789,
-    groupId: 123456,
-    members: [],
-    ...overrides,
   });
 
   describe('date matching', () => {

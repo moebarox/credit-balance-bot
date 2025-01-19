@@ -1,4 +1,8 @@
 import './editbalance';
+import {
+  createTelegramMessage,
+  createBilling,
+} from '../01-helpers/tests/utils';
 
 describe('EditBalance command', () => {
   let mockSendMessage: jest.Mock;
@@ -28,33 +32,10 @@ describe('EditBalance command', () => {
     };
   });
 
-  const createMessage = (text: string): TelegramMessage => ({
-    chat: {
-      id: 123456,
-      type: 'group',
-    },
-    from: {
-      id: 789,
-      username: 'testuser',
-    },
-    text,
-  });
-
-  const createBilling = (overrides = {}): Billing => ({
-    _id: '123',
-    key: 'wifi',
-    billingAmount: 100000,
-    billingDate: 1,
-    adminId: 789,
-    groupId: 123456,
-    members: [],
-    ...overrides,
-  });
-
   describe('input validation', () => {
     it('should show help message for empty command', () => {
       mockGetMessage.mockReturnValue('');
-      globalThis.editBalanceHandler(createMessage('/editbalance'));
+      globalThis.editBalanceHandler(createTelegramMessage('/editbalance'));
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -65,7 +46,9 @@ describe('EditBalance command', () => {
 
     it('should show help message for missing amount', () => {
       mockGetMessage.mockReturnValue('wifi @user1');
-      globalThis.editBalanceHandler(createMessage('/editbalance wifi @user1'));
+      globalThis.editBalanceHandler(
+        createTelegramMessage('/editbalance wifi @user1')
+      );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -77,7 +60,7 @@ describe('EditBalance command', () => {
     it('should show help message for invalid amount format', () => {
       mockGetMessage.mockReturnValue('wifi @user1 abc');
       globalThis.editBalanceHandler(
-        createMessage('/editbalance wifi @user1 abc')
+        createTelegramMessage('/editbalance wifi @user1 abc')
       );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
@@ -94,7 +77,7 @@ describe('EditBalance command', () => {
       mockGetBilling.mockReturnValue(null);
 
       globalThis.editBalanceHandler(
-        createMessage('/editbalance wifi @user1 1000')
+        createTelegramMessage('/editbalance wifi @user1 1000')
       );
 
       expect(mockGetBilling).toHaveBeenCalledWith(123456, 'wifi');
@@ -110,7 +93,7 @@ describe('EditBalance command', () => {
       mockGetBilling.mockReturnValue(createBilling({ adminId: 999 })); // Different admin ID
 
       globalThis.editBalanceHandler(
-        createMessage('/editbalance wifi @user1 1000')
+        createTelegramMessage('/editbalance wifi @user1 1000')
       );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
@@ -131,7 +114,7 @@ describe('EditBalance command', () => {
       mockGenerateUserBalance.mockReturnValue(['@user1: Rp 1.000']);
 
       globalThis.editBalanceHandler(
-        createMessage('/editbalance wifi @user1 1000')
+        createTelegramMessage('/editbalance wifi @user1 1000')
       );
 
       expect(mockUpdateBalance).toHaveBeenCalledWith(
@@ -158,7 +141,7 @@ describe('EditBalance command', () => {
       mockGenerateUserBalance.mockReturnValue(['@user1: Rp 1.000']);
 
       globalThis.editBalanceHandler(
-        createMessage('/editbalance wifi @user1 @nonexistent 1000')
+        createTelegramMessage('/editbalance wifi @user1 @nonexistent 1000')
       );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
@@ -182,7 +165,7 @@ describe('EditBalance command', () => {
       mockGenerateUserBalance.mockReturnValue(['@user1: -Rp 1.000']);
 
       globalThis.editBalanceHandler(
-        createMessage('/editbalance wifi @user1 -1000')
+        createTelegramMessage('/editbalance wifi @user1 -1000')
       );
 
       expect(mockUpdateBalance).toHaveBeenCalledWith(
@@ -208,7 +191,7 @@ describe('EditBalance command', () => {
       ]);
 
       globalThis.editBalanceHandler(
-        createMessage('/editbalance wifi @user1 @user2 1000')
+        createTelegramMessage('/editbalance wifi @user1 @user2 1000')
       );
 
       expect(mockUpdateBalance).toHaveBeenCalledWith(

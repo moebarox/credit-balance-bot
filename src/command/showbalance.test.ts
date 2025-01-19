@@ -1,4 +1,8 @@
 import './showbalance';
+import {
+  createTelegramMessage,
+  createBilling,
+} from '../01-helpers/tests/utils';
 
 describe('ShowBalance command', () => {
   let mockSendMessage: jest.Mock;
@@ -25,29 +29,6 @@ describe('ShowBalance command', () => {
     };
   });
 
-  const createMessage = (text: string): TelegramMessage => ({
-    chat: {
-      id: 123456,
-      type: 'group',
-    },
-    from: {
-      id: 789,
-      username: 'testuser',
-    },
-    text,
-  });
-
-  const createBilling = (overrides = {}): Billing => ({
-    _id: '123',
-    key: 'wifi',
-    billingAmount: 100000,
-    billingDate: 1,
-    adminId: 789,
-    groupId: 123456,
-    members: [],
-    ...overrides,
-  });
-
   describe('show all balances', () => {
     it('should show all credit balances when no key provided', () => {
       const billings = [
@@ -66,7 +47,7 @@ describe('ShowBalance command', () => {
         .mockReturnValueOnce('Wifi Balance Message')
         .mockReturnValueOnce('Listrik Balance Message');
 
-      globalThis.showBalanceHandler(createMessage('/showbalance'));
+      globalThis.showBalanceHandler(createTelegramMessage('/showbalance'));
 
       expect(mockListBillingWithMembers).toHaveBeenCalledWith({
         groupId: 123456,
@@ -89,7 +70,7 @@ describe('ShowBalance command', () => {
       mockGetMessage.mockReturnValue('');
       mockListBillingWithMembers.mockReturnValue([]);
 
-      globalThis.showBalanceHandler(createMessage('/showbalance'));
+      globalThis.showBalanceHandler(createTelegramMessage('/showbalance'));
 
       expect(mockListBillingWithMembers).toHaveBeenCalledWith({
         groupId: 123456,
@@ -102,7 +83,9 @@ describe('ShowBalance command', () => {
   describe('input validation', () => {
     it('should show help message for invalid format', () => {
       mockGetMessage.mockReturnValue('wifi test');
-      globalThis.showBalanceHandler(createMessage('/showbalance wifi test'));
+      globalThis.showBalanceHandler(
+        createTelegramMessage('/showbalance wifi test')
+      );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -117,7 +100,7 @@ describe('ShowBalance command', () => {
       mockGetMessage.mockReturnValue('wifi');
       mockListBillingWithMembers.mockReturnValue([]);
 
-      globalThis.showBalanceHandler(createMessage('/showbalance wifi'));
+      globalThis.showBalanceHandler(createTelegramMessage('/showbalance wifi'));
 
       expect(mockListBillingWithMembers).toHaveBeenCalledWith({
         groupId: 123456,
@@ -141,7 +124,7 @@ describe('ShowBalance command', () => {
       mockListBillingWithMembers.mockReturnValue([billing]);
       mockGenerateCreditBalance.mockReturnValue('Wifi Balance Message');
 
-      globalThis.showBalanceHandler(createMessage('/showbalance wifi'));
+      globalThis.showBalanceHandler(createTelegramMessage('/showbalance wifi'));
 
       expect(mockListBillingWithMembers).toHaveBeenCalledWith({
         groupId: 123456,

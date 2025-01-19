@@ -1,4 +1,8 @@
 import './addmember';
+import {
+  createTelegramMessage,
+  createBilling,
+} from '../01-helpers/tests/utils';
 
 describe('AddMember command', () => {
   let mockSendMessage: jest.Mock;
@@ -25,33 +29,10 @@ describe('AddMember command', () => {
     };
   });
 
-  const createMessage = (text: string): TelegramMessage => ({
-    chat: {
-      id: 123456,
-      type: 'group',
-    },
-    from: {
-      id: 789,
-      username: 'testuser',
-    },
-    text,
-  });
-
-  const createBilling = (overrides = {}): Billing => ({
-    _id: '123',
-    key: 'wifi',
-    billingAmount: 100000,
-    billingDate: 1,
-    adminId: 789,
-    groupId: 123456,
-    members: [],
-    ...overrides,
-  });
-
   describe('input validation', () => {
     it('should show help message for empty command', () => {
       mockGetMessage.mockReturnValue('');
-      globalThis.addMemberHandler(createMessage('/addmember'));
+      globalThis.addMemberHandler(createTelegramMessage('/addmember'));
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -62,7 +43,7 @@ describe('AddMember command', () => {
 
     it('should show help message for missing users', () => {
       mockGetMessage.mockReturnValue('wifi');
-      globalThis.addMemberHandler(createMessage('/addmember wifi'));
+      globalThis.addMemberHandler(createTelegramMessage('/addmember wifi'));
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -78,7 +59,7 @@ describe('AddMember command', () => {
       mockListBillingWithMembers.mockReturnValue([]);
 
       globalThis.addMemberHandler(
-        createMessage('/addmember wifi @user1 @user2')
+        createTelegramMessage('/addmember wifi @user1 @user2')
       );
 
       expect(mockListBillingWithMembers).toHaveBeenCalledWith({
@@ -99,7 +80,7 @@ describe('AddMember command', () => {
       ]);
 
       globalThis.addMemberHandler(
-        createMessage('/addmember wifi @user1 @user2')
+        createTelegramMessage('/addmember wifi @user1 @user2')
       );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
@@ -122,7 +103,7 @@ describe('AddMember command', () => {
       ]);
 
       globalThis.addMemberHandler(
-        createMessage('/addmember wifi @user1 @user2')
+        createTelegramMessage('/addmember wifi @user1 @user2')
       );
 
       expect(mockSendMessage).toHaveBeenCalledWith(
@@ -137,7 +118,7 @@ describe('AddMember command', () => {
       mockListBillingWithMembers.mockReturnValue([createBilling()]);
 
       globalThis.addMemberHandler(
-        createMessage('/addmember wifi @user1 @user2')
+        createTelegramMessage('/addmember wifi @user1 @user2')
       );
 
       expect(mockAddMembers).toHaveBeenCalledWith([
@@ -167,7 +148,7 @@ describe('AddMember command', () => {
       ]);
 
       globalThis.addMemberHandler(
-        createMessage('/addmember wifi @user1 @existinguser')
+        createTelegramMessage('/addmember wifi @user1 @existinguser')
       );
 
       expect(mockAddMembers).toHaveBeenCalledWith([
@@ -184,7 +165,7 @@ describe('AddMember command', () => {
       mockListBillingWithMembers.mockReturnValue([createBilling()]);
 
       globalThis.addMemberHandler(
-        createMessage('/addmember wifi   @user1    @user2')
+        createTelegramMessage('/addmember wifi   @user1    @user2')
       );
 
       expect(mockAddMembers).toHaveBeenCalledWith([
@@ -206,7 +187,7 @@ describe('AddMember command', () => {
       mockListBillingWithMembers.mockReturnValue([createBilling()]);
 
       globalThis.addMemberHandler(
-        createMessage('/addmember wifi user1 @user2')
+        createTelegramMessage('/addmember wifi user1 @user2')
       );
 
       expect(mockAddMembers).toHaveBeenCalledWith([
