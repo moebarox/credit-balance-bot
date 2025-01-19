@@ -31,24 +31,13 @@ function editBillingHandler(ctxMessage: TelegramMessage) {
     return;
   }
 
-  MongoDB.updateOne(
-    'billings',
-    {
-      key,
-      groupId: {
-        $numberLong: String(groupId),
-      },
-    },
-    {
-      key,
-      billingDate: Number(billingDate),
-      billingAmount: Number(billingAmount),
-      adminId: ctxMessage.from.id,
-      groupId: {
-        $numberLong: String(groupId),
-      },
-    }
-  );
+  Credit.updateBilling({
+    key,
+    groupId,
+    billingDate: Number(billingDate),
+    billingAmount: Number(billingAmount),
+    adminId: ctxMessage.from.id,
+  });
 
   Bot.sendMessage(groupId, 'sudah diedit mamangque :D');
 }

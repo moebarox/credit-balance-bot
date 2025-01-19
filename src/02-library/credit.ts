@@ -2,15 +2,14 @@ namespace Credit {
   export function listBillingWithMembers(
     $match: Record<string, any>
   ): Billing[] {
+    if ($match.groupId) {
+      $match.groupId = {
+        $numberLong: String($match.groupId),
+      };
+    }
+
     return MongoDB.aggregate<Billing>('billings', [
-      {
-        $match: {
-          ...$match,
-          groupId: {
-            $numberLong: String($match.groupId),
-          },
-        },
-      },
+      { $match },
       {
         $lookup: {
           from: 'members',
@@ -111,6 +110,56 @@ namespace Credit {
 
   export function addMembers(members: BillingMember[]) {
     MongoDB.insertMany('members', members);
+  }
+
+  export function deleteMembers(members: BillingMember[]) {
+    const billingId = members[0].billingId;
+    MongoDB.deleteMany('members', {
+      billingId: {
+        $oid: billingId,
+      },
+      username: {
+        $in: members.map((m) => m.username),
+      },
+    });
+  }
+
+  export function createBilling(billing: Billing) {
+    return MongoDB.insertOne('billings', {
+      key: billing.key,
+      billingDate: billing.billingDate,
+      billingAmount: billing.billingAmount,
+      adminId: billing.adminId,
+      groupId: {
+        $numberLong: String(billing.groupId),
+      },
+    });
+  }
+
+  export function updateBilling(billing: Billing) {
+    MongoDB.updateOne(
+      'billings',
+      {
+        key: billing.key,
+        groupId: {
+          $numberLong: String(billing.groupId),
+        },
+      },
+      {
+        key: billing.key,
+        billingDate: billing.billingDate,
+        billingAmount: billing.billingAmount,
+        adminId: billing.adminId,
+        groupId: {
+          $numberLong: String(billing.groupId),
+        },
+      }
+    );
+  }
+
+  export function deleteBilling(billingId: string) {
+    MongoDB.deleteMany('billings', { _id: { $oid: billingId } });
+    MongoDB.deleteMany('members', { billingId: { $oid: billingId } });
   }
 }
 

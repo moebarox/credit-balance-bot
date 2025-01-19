@@ -34,21 +34,21 @@ function newBillingHandler(ctxMessage: TelegramMessage) {
     return;
   }
 
-  const id = MongoDB.insertOne('billings', {
+  const id = Credit.createBilling({
     key,
+    groupId,
     billingDate: Number(billingDate),
     billingAmount: Number(billingAmount),
     adminId: ctxMessage.from.id,
-    groupId: {
-      $numberLong: String(groupId),
-    },
   });
 
-  MongoDB.insertOne('members', {
-    billingId: { $oid: id },
-    username: ctxMessage.from.username,
-    balance: 0,
-  });
+  Credit.addMembers([
+    {
+      billingId: { $oid: id },
+      username: ctxMessage.from.username,
+      balance: 0,
+    },
+  ]);
 
   Bot.sendMessage(
     groupId,

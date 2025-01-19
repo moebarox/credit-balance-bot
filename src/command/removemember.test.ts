@@ -4,14 +4,14 @@ describe('RemoveMember command', () => {
   let mockSendMessage: jest.Mock;
   let mockGetMessage: jest.Mock;
   let mockListBillingWithMembers: jest.Mock;
-  let mockDeleteMany: jest.Mock;
+  let mockDeleteMembers: jest.Mock;
   let mockGenerateUserBalance: jest.Mock;
 
   beforeEach(() => {
     mockSendMessage = jest.fn();
     mockGetMessage = jest.fn();
     mockListBillingWithMembers = jest.fn();
-    mockDeleteMany = jest.fn();
+    mockDeleteMembers = jest.fn();
     mockGenerateUserBalance = jest.fn();
 
     (globalThis as any).Bot = {
@@ -20,10 +20,8 @@ describe('RemoveMember command', () => {
     };
     (globalThis as any).Credit = {
       listBillingWithMembers: mockListBillingWithMembers,
+      deleteMembers: mockDeleteMembers,
       generateUserBalance: mockGenerateUserBalance,
-    };
-    (globalThis as any).MongoDB = {
-      deleteMany: mockDeleteMany,
     };
     (globalThis as any).COMMAND_HELP = {
       removemember: 'Usage: /removemember <key> <@user1 @user2>',
@@ -131,9 +129,7 @@ describe('RemoveMember command', () => {
         createMessage('/removemember wifi @user1 @user2')
       );
 
-      expect(mockDeleteMany).toHaveBeenCalledWith('members', {
-        username: { $in: ['user1', 'user2'] },
-      });
+      expect(mockDeleteMembers).toHaveBeenCalledWith(members);
       expect(mockSendMessage).toHaveBeenCalledWith(123456, [
         'berhasil ngahapus member dengan sisa saldo:',
         '---',
@@ -149,9 +145,7 @@ describe('RemoveMember command', () => {
 
       globalThis.removeMemberHandler(createMessage('/removemember wifi user1'));
 
-      expect(mockDeleteMany).toHaveBeenCalledWith('members', {
-        username: { $in: ['user1'] },
-      });
+      expect(mockDeleteMembers).toHaveBeenCalledWith(members);
     });
 
     it('should handle multiple spaces between usernames', () => {
@@ -170,9 +164,7 @@ describe('RemoveMember command', () => {
         createMessage('/removemember wifi user1   user2')
       );
 
-      expect(mockDeleteMany).toHaveBeenCalledWith('members', {
-        username: { $in: ['user1', 'user2'] },
-      });
+      expect(mockDeleteMembers).toHaveBeenCalledWith(members);
     });
   });
 });

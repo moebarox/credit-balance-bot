@@ -41,6 +41,7 @@ function joinHandler(ctxMessage: TelegramMessage) {
       balance: 0,
     },
   ]);
+
   Bot.sendMessage(groupId, 'berhasil join mamangque :D');
 }
 

@@ -8,23 +8,11 @@ function billingScheduler() {
   const deduction = [];
   const reminder = [];
 
-  const billings = MongoDB.aggregate<Billing>('billings', [
-    {
-      $match: {
-        billingDate: {
-          $in: [currentDate, nextDate],
-        },
-      },
+  const billings = Credit.listBillingWithMembers({
+    billingDate: {
+      $in: [currentDate, nextDate],
     },
-    {
-      $lookup: {
-        from: 'members',
-        localField: '_id',
-        foreignField: 'billingId',
-        as: 'members',
-      },
-    },
-  ]);
+  });
 
   for (let i = 0; i < billings.length; i += 1) {
     const billing = billings[i];
@@ -75,25 +63,13 @@ function billingScheduler() {
   }
 
   if (deduction.length > 0) {
-    const updatedBillings = MongoDB.aggregate<Billing>('billings', [
-      {
-        $match: {
-          _id: {
-            $in: deduction.map((c) => ({
-              $oid: c._id,
-            })),
-          },
-        },
+    const updatedBillings = Credit.listBillingWithMembers({
+      _id: {
+        $in: deduction.map((c) => ({
+          $oid: c._id,
+        })),
       },
-      {
-        $lookup: {
-          from: 'members',
-          localField: '_id',
-          foreignField: 'billingId',
-          as: 'members',
-        },
-      },
-    ]);
+    });
 
     for (let i = 0; i < updatedBillings.length; i += 1) {
       const billing = updatedBillings[i];

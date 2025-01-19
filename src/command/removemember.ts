@@ -39,9 +39,7 @@ function removeMemberHandler(ctxMessage: TelegramMessage) {
     usernames.includes(m.username)
   );
 
-  MongoDB.deleteMany('members', {
-    username: { $in: members.map((m: BillingMember) => m.username) },
-  });
+  Credit.deleteMembers(members);
 
   const userBalance = Credit.generateUserBalance(members);
   Bot.sendMessage(groupId, [

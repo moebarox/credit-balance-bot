@@ -52,7 +52,7 @@ namespace MongoDB {
     return response.document;
   }
 
-  export function insertOne<T>(
+  export function insertOne(
     collection: string,
     document: Record<string, any>
   ): string {
@@ -61,7 +61,10 @@ namespace MongoDB {
       document,
     };
 
-    const response = doMongoRequest_<DataAPIResponse<T>>('insertOne', payload);
+    const response = doMongoRequest_<DataAPIResponse<string>>(
+      'insertOne',
+      payload
+    );
     return response.insertedId!;
   }
 

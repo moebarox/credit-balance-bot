@@ -4,13 +4,15 @@ describe('NewBilling command', () => {
   let mockSendMessage: jest.Mock;
   let mockGetMessage: jest.Mock;
   let mockGetBilling: jest.Mock;
-  let mockInsertOne: jest.Mock;
+  let mockCreateBilling: jest.Mock;
+  let mockAddMembers: jest.Mock;
 
   beforeEach(() => {
     mockSendMessage = jest.fn();
     mockGetMessage = jest.fn();
     mockGetBilling = jest.fn();
-    mockInsertOne = jest.fn();
+    mockCreateBilling = jest.fn();
+    mockAddMembers = jest.fn();
 
     (globalThis as any).Bot = {
       sendMessage: mockSendMessage,
@@ -18,9 +20,8 @@ describe('NewBilling command', () => {
     };
     (globalThis as any).Credit = {
       getBilling: mockGetBilling,
-    };
-    (globalThis as any).MongoDB = {
-      insertOne: mockInsertOne,
+      createBilling: mockCreateBilling,
+      addMembers: mockAddMembers,
     };
     (globalThis as any).COMMAND_HELP = {
       newbilling: 'Usage: /newbilling <key> <billingDate> <billingAmount>',
@@ -59,13 +60,13 @@ describe('NewBilling command', () => {
     it('should allow supergroup chat', () => {
       mockGetMessage.mockReturnValue('wifi 1 100000');
       mockGetBilling.mockReturnValue(null);
-      mockInsertOne.mockReturnValueOnce('new_billing_id');
+      mockCreateBilling.mockReturnValue('new_billing_id');
 
       globalThis.newBillingHandler(
         createMessage('/newbilling wifi 1 100000', 'supergroup')
       );
 
-      expect(mockInsertOne).toHaveBeenCalled();
+      expect(mockCreateBilling).toHaveBeenCalled();
     });
   });
 
@@ -124,25 +125,25 @@ describe('NewBilling command', () => {
     it('should handle successful billing creation', () => {
       mockGetMessage.mockReturnValue('wifi 15 150000');
       mockGetBilling.mockReturnValue(null);
-      mockInsertOne.mockReturnValueOnce('new_billing_id');
+      mockCreateBilling.mockReturnValue('new_billing_id');
 
       globalThis.newBillingHandler(createMessage('/newbilling wifi 15 150000'));
 
-      expect(mockInsertOne).toHaveBeenCalledWith('billings', {
+      expect(mockCreateBilling).toHaveBeenCalledWith({
         key: 'wifi',
         billingDate: 15,
         billingAmount: 150000,
         adminId: 789,
-        groupId: {
-          $numberLong: '123456',
-        },
+        groupId: 123456,
       });
 
-      expect(mockInsertOne).toHaveBeenCalledWith('members', {
-        billingId: { $oid: 'new_billing_id' },
-        username: 'testuser',
-        balance: 0,
-      });
+      expect(mockAddMembers).toHaveBeenCalledWith([
+        {
+          billingId: { $oid: 'new_billing_id' },
+          username: 'testuser',
+          balance: 0,
+        },
+      ]);
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,

@@ -31,13 +31,7 @@ function deleteBillingHandler(ctxMessage: TelegramMessage) {
     return;
   }
 
-  MongoDB.deleteMany('billings', {
-    _id: { $oid: billing._id },
-  });
-
-  MongoDB.deleteMany('members', {
-    billingId: { $oid: billing._id },
-  });
+  Credit.deleteBilling(String(billing._id));
 
   Bot.sendMessage(groupId, [
     'parantos dihapus mamangque :(',

@@ -4,13 +4,13 @@ describe('EditBilling command', () => {
   let mockSendMessage: jest.Mock;
   let mockGetMessage: jest.Mock;
   let mockGetBilling: jest.Mock;
-  let mockUpdateOne: jest.Mock;
+  let mockUpdateBilling: jest.Mock;
 
   beforeEach(() => {
     mockSendMessage = jest.fn();
     mockGetMessage = jest.fn();
     mockGetBilling = jest.fn();
-    mockUpdateOne = jest.fn();
+    mockUpdateBilling = jest.fn();
 
     (globalThis as any).Bot = {
       sendMessage: mockSendMessage,
@@ -18,9 +18,7 @@ describe('EditBilling command', () => {
     };
     (globalThis as any).Credit = {
       getBilling: mockGetBilling,
-    };
-    (globalThis as any).MongoDB = {
-      updateOne: mockUpdateOne,
+      updateBilling: mockUpdateBilling,
     };
     (globalThis as any).COMMAND_HELP = {
       editbilling: 'Usage: /editbilling <key> <billingDate> <billingAmount>',
@@ -126,24 +124,13 @@ describe('EditBilling command', () => {
         createMessage('/editbilling wifi 15 150000')
       );
 
-      expect(mockUpdateOne).toHaveBeenCalledWith(
-        'billings',
-        {
-          key: 'wifi',
-          groupId: {
-            $numberLong: '123456',
-          },
-        },
-        {
-          key: 'wifi',
-          billingDate: 15,
-          billingAmount: 150000,
-          adminId: 789,
-          groupId: {
-            $numberLong: '123456',
-          },
-        }
-      );
+      expect(mockUpdateBilling).toHaveBeenCalledWith({
+        key: 'wifi',
+        groupId: 123456,
+        billingDate: 15,
+        billingAmount: 150000,
+        adminId: 789,
+      });
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
         'sudah diedit mamangque :D'

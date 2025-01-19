@@ -4,14 +4,14 @@ describe('DeleteBilling command', () => {
   let mockSendMessage: jest.Mock;
   let mockGetMessage: jest.Mock;
   let mockListBillingWithMembers: jest.Mock;
-  let mockDeleteMany: jest.Mock;
+  let mockDeleteBilling: jest.Mock;
   let mockGenerateCreditBalance: jest.Mock;
 
   beforeEach(() => {
     mockSendMessage = jest.fn();
     mockGetMessage = jest.fn();
     mockListBillingWithMembers = jest.fn();
-    mockDeleteMany = jest.fn();
+    mockDeleteBilling = jest.fn();
     mockGenerateCreditBalance = jest.fn();
 
     (globalThis as any).Bot = {
@@ -20,10 +20,8 @@ describe('DeleteBilling command', () => {
     };
     (globalThis as any).Credit = {
       listBillingWithMembers: mockListBillingWithMembers,
+      deleteBilling: mockDeleteBilling,
       generateCreditBalance: mockGenerateCreditBalance,
-    };
-    (globalThis as any).MongoDB = {
-      deleteMany: mockDeleteMany,
     };
     (globalThis as any).COMMAND_HELP = {
       deletebilling: 'Usage: /deletebilling <key>',
@@ -113,7 +111,7 @@ describe('DeleteBilling command', () => {
   });
 
   describe('billing deletion', () => {
-    it('should delete billing and its members', () => {
+    it('should delete billing and show final balance', () => {
       const mockMembers = [
         { username: 'user1', balance: 50000 },
         { username: 'user2', balance: 75000 },
@@ -127,14 +125,7 @@ describe('DeleteBilling command', () => {
       globalThis.deleteBillingHandler(createMessage('/deletebilling wifi'));
 
       // Should delete billing
-      expect(mockDeleteMany).toHaveBeenCalledWith('billings', {
-        _id: { $oid: '123' },
-      });
-
-      // Should delete members
-      expect(mockDeleteMany).toHaveBeenCalledWith('members', {
-        billingId: { $oid: '123' },
-      });
+      expect(mockDeleteBilling).toHaveBeenCalledWith(String(mockBilling._id));
 
       // Should show success message
       expect(mockSendMessage).toHaveBeenCalledWith(123456, [
@@ -159,7 +150,7 @@ describe('DeleteBilling command', () => {
 
       globalThis.deleteBillingHandler(createMessage('/deletebilling wifi'));
 
-      expect(mockDeleteMany).toHaveBeenCalledTimes(2);
+      expect(mockDeleteBilling).toHaveBeenCalledWith(String(mockBilling._id));
       expect(mockGenerateCreditBalance).toHaveBeenCalledWith(mockBilling, []);
     });
   });

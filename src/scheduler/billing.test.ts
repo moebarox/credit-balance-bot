@@ -2,7 +2,7 @@ import './billing';
 
 describe('Billing Scheduler', () => {
   let mockSendMessage: jest.Mock;
-  let mockAggregate: jest.Mock;
+  let mockListBillingWithMembers: jest.Mock;
   let mockUpdateBalance: jest.Mock;
   let mockGenerateUserBalance: jest.Mock;
   let mockGenerateCreditBalance: jest.Mock;
@@ -11,7 +11,7 @@ describe('Billing Scheduler', () => {
 
   beforeEach(() => {
     mockSendMessage = jest.fn();
-    mockAggregate = jest.fn();
+    mockListBillingWithMembers = jest.fn();
     mockUpdateBalance = jest.fn();
     mockGenerateUserBalance = jest.fn();
     mockGenerateCreditBalance = jest.fn();
@@ -21,12 +21,10 @@ describe('Billing Scheduler', () => {
       sendMessage: mockSendMessage,
     };
     (globalThis as any).Credit = {
+      listBillingWithMembers: mockListBillingWithMembers,
       updateBalance: mockUpdateBalance,
       generateUserBalance: mockGenerateUserBalance,
       generateCreditBalance: mockGenerateCreditBalance,
-    };
-    (globalThis as any).MongoDB = {
-      aggregate: mockAggregate,
     };
     (globalThis as any).DateHelper = {
       isLeapYear: mockIsLeapYear,
@@ -55,12 +53,10 @@ describe('Billing Scheduler', () => {
 
   describe('date matching', () => {
     beforeEach(() => {
-      // Set up fake timers before each test
       jest.useFakeTimers();
     });
 
     afterEach(() => {
-      // Clean up fake timers after each test
       jest.useRealTimers();
     });
 
@@ -74,13 +70,14 @@ describe('Billing Scheduler', () => {
           { username: 'user2', balance: 50000 },
         ],
       });
-      mockAggregate
-        .mockReturnValueOnce([billing])
-        .mockReturnValueOnce([billing]);
+      mockListBillingWithMembers.mockReturnValue([billing]);
       mockGenerateCreditBalance.mockReturnValue('Credit Balance Message');
 
       globalThis.billingScheduler();
 
+      expect(mockListBillingWithMembers).toHaveBeenCalledWith({
+        billingDate: { $in: [15, 16] },
+      });
       expect(mockUpdateBalance).toHaveBeenCalledWith(billing, ['all'], -50000);
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
@@ -95,9 +92,7 @@ describe('Billing Scheduler', () => {
         billingDate: 30, // Will be adjusted to 28
         members: [{ username: 'user1', balance: 100000 }],
       });
-      mockAggregate
-        .mockReturnValueOnce([billing])
-        .mockReturnValueOnce([billing]);
+      mockListBillingWithMembers.mockReturnValue([billing]);
       mockIsLeapYear.mockReturnValue(false);
 
       globalThis.billingScheduler();
@@ -112,9 +107,7 @@ describe('Billing Scheduler', () => {
         billingDate: 30, // Will be adjusted to 29
         members: [{ username: 'user1', balance: 100000 }],
       });
-      mockAggregate
-        .mockReturnValueOnce([billing])
-        .mockReturnValueOnce([billing]);
+      mockListBillingWithMembers.mockReturnValue([billing]);
       mockIsLeapYear.mockReturnValue(true);
 
       globalThis.billingScheduler();
@@ -125,12 +118,10 @@ describe('Billing Scheduler', () => {
 
   describe('reminders', () => {
     beforeEach(() => {
-      // Set up fake timers before each test
       jest.useFakeTimers();
     });
 
     afterEach(() => {
-      // Clean up fake timers after each test
       jest.useRealTimers();
     });
 
@@ -144,7 +135,7 @@ describe('Billing Scheduler', () => {
           { username: 'user2', balance: 100000 }, // Sufficient
         ],
       });
-      mockAggregate.mockReturnValueOnce([billing]);
+      mockListBillingWithMembers.mockReturnValue([billing]);
       mockGenerateUserBalance.mockReturnValue(['@user1: Rp 10.000']);
 
       globalThis.billingScheduler();
@@ -169,7 +160,7 @@ describe('Billing Scheduler', () => {
           { username: 'user2', balance: 100000 },
         ],
       });
-      mockAggregate.mockReturnValueOnce([billing]);
+      mockListBillingWithMembers.mockReturnValue([billing]);
 
       globalThis.billingScheduler();
 
@@ -180,12 +171,10 @@ describe('Billing Scheduler', () => {
 
   describe('balance deduction', () => {
     beforeEach(() => {
-      // Set up fake timers before each test
       jest.useFakeTimers();
     });
 
     afterEach(() => {
-      // Clean up fake timers after each test
       jest.useRealTimers();
     });
 
@@ -200,9 +189,7 @@ describe('Billing Scheduler', () => {
           { username: 'user2', balance: 60000 },
         ],
       });
-      mockAggregate
-        .mockReturnValueOnce([billing])
-        .mockReturnValueOnce([billing]);
+      mockListBillingWithMembers.mockReturnValue([billing]);
       mockGenerateCreditBalance.mockReturnValue('Credit Balance Message');
 
       globalThis.billingScheduler();
@@ -211,6 +198,48 @@ describe('Billing Scheduler', () => {
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,
         'Credit Balance Message'
+      );
+    });
+
+    it('should handle multiple billings on the same day', () => {
+      jest.setSystemTime(new Date('2024-02-15T01:00:00Z'));
+
+      const billing1 = createBilling({
+        billingDate: 15,
+        billingAmount: 100000,
+        members: [{ username: 'user1', balance: 100000 }],
+      });
+      const billing2 = createBilling({
+        _id: '456',
+        key: 'internet',
+        billingDate: 15,
+        billingAmount: 200000,
+        members: [{ username: 'user1', balance: 200000 }],
+      });
+      mockListBillingWithMembers.mockReturnValue([billing1, billing2]);
+      mockGenerateCreditBalance
+        .mockReturnValueOnce('Credit Balance Message 1')
+        .mockReturnValueOnce('Credit Balance Message 2');
+
+      globalThis.billingScheduler();
+
+      expect(mockUpdateBalance).toHaveBeenCalledWith(
+        billing1,
+        ['all'],
+        -100000
+      );
+      expect(mockUpdateBalance).toHaveBeenCalledWith(
+        billing2,
+        ['all'],
+        -200000
+      );
+      expect(mockSendMessage).toHaveBeenCalledWith(
+        123456,
+        'Credit Balance Message 1'
+      );
+      expect(mockSendMessage).toHaveBeenCalledWith(
+        123456,
+        'Credit Balance Message 2'
       );
     });
   });
