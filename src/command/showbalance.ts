@@ -1,6 +1,6 @@
 function showBalanceHandler(ctxMessage: TelegramMessage) {
   const groupId = ctxMessage.chat.id;
-  const text = Bot.getMessage_(ctxMessage.text);
+  const text = Bot.getMessage(ctxMessage.text);
   const matcher = text.match(/^(?<key>\w+)$/i);
 
   // Print all credit balance within the current group

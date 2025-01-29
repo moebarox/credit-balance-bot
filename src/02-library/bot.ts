@@ -1,12 +1,12 @@
 namespace Bot {
   const COMMAND_REGEX = /^\/(\w+)(@\w+)?/i;
 
-  export function getCommand_(text: string): string {
+  export function getCommand(text: string): string {
     const matcher = text.match(COMMAND_REGEX);
     return matcher?.[1] ?? '';
   }
 
-  export function getMessage_(text: string): string {
+  export function getMessage(text: string): string {
     return text.replace(COMMAND_REGEX, '').trim();
   }
 

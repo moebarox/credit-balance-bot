@@ -28,7 +28,7 @@ describe('Telegram Bot Webhook', () => {
 
     (globalThis as any).Bot = {
       sendMessage: mockSendMessage,
-      getCommand_: mockGetCommand,
+      getCommand: mockGetCommand,
     };
     (globalThis as any).aboutHandler = mockAboutHandler;
     (globalThis as any).newBillingHandler = mockNewBillingHandler;

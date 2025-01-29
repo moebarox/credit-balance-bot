@@ -1,7 +1,7 @@
 function joinHandler(ctxMessage: TelegramMessage) {
   const groupId = ctxMessage.chat.id;
   const username = ctxMessage.from.username;
-  const text = Bot.getMessage_(ctxMessage.text);
+  const text = Bot.getMessage(ctxMessage.text);
   const matcher = text.match(/^(?<key>\w+)$/i);
 
   // Error invalid format

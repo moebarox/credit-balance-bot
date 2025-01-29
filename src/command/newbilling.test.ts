@@ -15,7 +15,7 @@ describe('NewBilling command', () => {
 
     (globalThis as any).Bot = {
       sendMessage: mockSendMessage,
-      getMessage_: mockGetMessage,
+      getMessage: mockGetMessage,
     };
     (globalThis as any).Billing = {
       getBilling: mockGetBilling,

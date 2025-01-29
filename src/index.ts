@@ -12,7 +12,7 @@ function doPost(e: GoogleAppsScript.Events.DoPost) {
   }
 
   try {
-    switch (Bot.getCommand_(data.message.text)) {
+    switch (Bot.getCommand(data.message.text)) {
       case 'about':
         aboutHandler(data);
         break;

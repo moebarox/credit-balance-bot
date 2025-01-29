@@ -1,50 +1,50 @@
 import './bot';
 
 describe('Bot library', () => {
-  describe('getCommand_', () => {
+  describe('getCommand', () => {
     it('should extract command from text', () => {
-      expect(globalThis.Bot.getCommand_('/start')).toBe('start');
-      expect(globalThis.Bot.getCommand_('/help')).toBe('help');
-      expect(globalThis.Bot.getCommand_('/balance')).toBe('balance');
+      expect(globalThis.Bot.getCommand('/start')).toBe('start');
+      expect(globalThis.Bot.getCommand('/help')).toBe('help');
+      expect(globalThis.Bot.getCommand('/balance')).toBe('balance');
     });
 
     it('should handle commands with bot username', () => {
-      expect(globalThis.Bot.getCommand_('/start@mybot')).toBe('start');
-      expect(globalThis.Bot.getCommand_('/help@testbot')).toBe('help');
+      expect(globalThis.Bot.getCommand('/start@mybot')).toBe('start');
+      expect(globalThis.Bot.getCommand('/help@testbot')).toBe('help');
     });
 
     it('should handle commands with arguments', () => {
-      expect(globalThis.Bot.getCommand_('/start argument')).toBe('start');
-      expect(globalThis.Bot.getCommand_('/help with some args')).toBe('help');
+      expect(globalThis.Bot.getCommand('/start argument')).toBe('start');
+      expect(globalThis.Bot.getCommand('/help with some args')).toBe('help');
     });
 
     it('should return empty string for invalid commands', () => {
-      expect(globalThis.Bot.getCommand_('not a command')).toBe('');
-      expect(globalThis.Bot.getCommand_('')).toBe('');
+      expect(globalThis.Bot.getCommand('not a command')).toBe('');
+      expect(globalThis.Bot.getCommand('')).toBe('');
     });
   });
 
-  describe('getMessage_', () => {
+  describe('getMessage', () => {
     it('should extract message from command text', () => {
-      expect(globalThis.Bot.getMessage_('/start hello')).toBe('hello');
-      expect(globalThis.Bot.getMessage_('/help world')).toBe('world');
+      expect(globalThis.Bot.getMessage('/start hello')).toBe('hello');
+      expect(globalThis.Bot.getMessage('/help world')).toBe('world');
     });
 
     it('should handle commands with bot username', () => {
-      expect(globalThis.Bot.getMessage_('/start@mybot hello')).toBe('hello');
-      expect(globalThis.Bot.getMessage_('/help@testbot world')).toBe('world');
+      expect(globalThis.Bot.getMessage('/start@mybot hello')).toBe('hello');
+      expect(globalThis.Bot.getMessage('/help@testbot world')).toBe('world');
     });
 
     it('should handle empty messages', () => {
-      expect(globalThis.Bot.getMessage_('/start')).toBe('');
-      expect(globalThis.Bot.getMessage_('/help@testbot')).toBe('');
+      expect(globalThis.Bot.getMessage('/start')).toBe('');
+      expect(globalThis.Bot.getMessage('/help@testbot')).toBe('');
     });
 
     it('should handle messages with multiple spaces', () => {
-      expect(globalThis.Bot.getMessage_('/start  hello  world ')).toBe(
+      expect(globalThis.Bot.getMessage('/start  hello  world ')).toBe(
         'hello  world'
       );
-      expect(globalThis.Bot.getMessage_('/help   test   message')).toBe(
+      expect(globalThis.Bot.getMessage('/help   test   message')).toBe(
         'test   message'
       );
     });

@@ -1,6 +1,6 @@
 function editBalanceHandler(ctxMessage: TelegramMessage) {
   const groupId = ctxMessage.chat.id;
-  const text = Bot.getMessage_(ctxMessage.text);
+  const text = Bot.getMessage(ctxMessage.text);
   const matcher = text.match(
     /^(?<key>\w+) (?<users>.+) (?<amount>(?:\+|-)?\d+)$/i
   );

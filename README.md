@@ -6,7 +6,8 @@ This Telegram Bot is designed to simplify the process of managing credit balance
 
 - [Create Telegram Bot](https://telegram.me/BotFather)
 - [Install Clasp](https://github.com/google/clasp)
-- [Setup MongoDB](https://www.mongodb.com) and enable [Atlas Data API](https://www.mongodb.com/developer/products/atlas/atlas-data-api-introduction/)
+- [Setup MongoDB](https://www.mongodb.com) and enable [Atlas Data API](https://www.mongodb.com/developer/products/atlas/atlas-data-api-introduction/) (Atlas Data API will be deprecated. Read more [here](https://www.mongodb.com/docs/atlas/app-services/deprecation/#std-label-app-services-deprecation))
+- [Setup Firebase](https://firebase.google.com) and create a [service account](https://github.com/grahamearley/FirestoreGoogleAppsScript/tree/v33?tab=readme-ov-file#creating-a-service-account)
 
 ## Installation
 
@@ -30,18 +31,28 @@ This Telegram Bot is designed to simplify the process of managing credit balance
 
 - Deploy the new Google Apps Script project
 
-  - Open the new Google Apps Script project
-  - Click **Deploy** and select **New deployment**.
-  - Click gear icon on the right of **Select type** and select **Web app**.
-  - Fill in the following information:
+  - Option 1: From the Google Apps Script project
 
-    - **New description**: "Credit Balance Bot"
-    - **Execute as**: "Me"
-    - **Who has access**: "Anyone"
+    - Open the new Google Apps Script project
+    - Click **Deploy** and select **New deployment**.
+    - Click gear icon on the right of **Select type** and select **Web app**.
+    - Fill in the following information:
 
-  - Click **Deploy**.
-  - Click **Authorize access** and complete the process.
-  - Copy the Web app URL.
+      - **New description**: "Credit Balance Bot"
+      - **Execute as**: "Me"
+      - **Who has access**: "Anyone"
+
+    - Click **Deploy**.
+    - Click **Authorize access** and complete the process.
+    - Copy the Web app URL.
+
+  - Option 2: Using command line
+
+    - Deploy the new version
+
+      ```bash
+      clasp deploy
+      ```
 
 - Add Script Properties
 
@@ -63,7 +74,7 @@ This Telegram Bot is designed to simplify the process of managing credit balance
   Do the following steps. This is required only once.
 
   - On the Google Apps Script project, go to **Editor**
-  - Select `index.gs` file
+  - Select `src/index.gs` file
   - On the toolbar, select `setWebhook` function
   - Click **Run**
 
@@ -89,14 +100,38 @@ This Telegram Bot is designed to simplify the process of managing credit balance
 
 Everytime you make changes, you need to deploy the new version. Do the following steps.
 
-- On the Google Apps Script project, click **Deploy** and select **Manage deployment**.
-- Click **Edit** (pen icon).
-- Fill in the following information:
+- Push the changes
 
-  - **Version**: "New version"
-  - **Description**: Fill with the new description (optional)
+  ```bash
+  clasp push
+  ```
 
-- Click **Deploy**.
+- Deploy the new version
+
+  - Option 1: From the Google Apps Script project
+
+    - On the Google Apps Script project, click **Deploy** and select **Manage deployment**.
+    - Click **Edit** (pen icon).
+    - Fill in the following information:
+
+      - **Version**: "New version"
+      - **Description**: Fill with the new description (optional)
+
+    - Click **Deploy**.
+
+  - Option 2: Using command line
+
+    - Get the deployment ID
+
+      ```bash
+      clasp deployments
+      ```
+
+    - Deploy the new version
+
+      ```bash
+      clasp deploy --deploymentId <deploymentID>
+      ```
 
 ## Commands
 
@@ -222,7 +257,7 @@ Edit balance of the member. Only admin can run this command.
 #### Options
 
 - `key` - Billing key.
-- `username(s)` - Username of the member. Can be multiple, separate by space. Using `@` will be allowed.
+- `username(s)` - Username of the member. Can be multiple, separate by space. Using `@` will be allowed. You can use `all` to edit all members.
 - `amount` - Topup/topdown amount. Positive value will be topup, negative value will be topdown. If multiple members is provided, the amount will affect all of them.
 
 #### Examples
@@ -232,3 +267,4 @@ Edit balance of the member. Only admin can run this command.
 - `/editbalance youtube johndoe janedee -1000`
 - `/editbalance youtube @johndoe @janedee 1000`
 - `/editbalance youtube @johndoe @janedee -1000`
+- `/editbalance youtube all 1000`
