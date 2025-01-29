@@ -463,4 +463,148 @@ describe('Billing library', () => {
       );
     });
   });
+
+  describe('listBillingByIds', () => {
+    const mockBillings: Billing[] = [
+      {
+        _id: 'billings/123',
+        key: 'wifi',
+        billingDate: 15,
+        billingAmount: 100000,
+        adminId: 123,
+        groupId: 456,
+        members: [
+          { username: 'user1', balance: 50000 },
+          { username: 'user2', balance: 50000 },
+        ],
+      },
+      {
+        _id: 'billings/456',
+        key: 'listrik',
+        billingDate: 20,
+        billingAmount: 200000,
+        adminId: 123,
+        groupId: 456,
+        members: [
+          { username: 'user1', balance: 100000 },
+          { username: 'user2', balance: 100000 },
+        ],
+      },
+    ];
+
+    beforeEach(() => {
+      // Reset all mocks before each test
+      jest.resetAllMocks();
+    });
+
+    describe('when using Firestore', () => {
+      beforeEach(() => {
+        (globalThis as any).DB_CONNECTION = DBConnection.Firestore;
+      });
+
+      it('should return billings by ids', () => {
+        // Mock Firestore.getDocuments
+        (globalThis as any).Firestore = {
+          getDocuments: jest.fn().mockReturnValue([
+            {
+              obj: { ...mockBillings[0], _id: undefined },
+              path: 'billings/123',
+            },
+            {
+              obj: { ...mockBillings[1], _id: undefined },
+              path: 'billings/456',
+            },
+          ]),
+        };
+
+        const result = globalThis.Billing.listBillingByIds([
+          'billings/123',
+          'billings/456',
+        ]);
+
+        expect(result).toEqual(mockBillings);
+        expect(globalThis.Firestore.getDocuments).toHaveBeenCalledWith(
+          'billings',
+          ['123', '456']
+        );
+      });
+
+      it('should return empty array when no billings found', () => {
+        // Mock Firestore.getDocuments
+        (globalThis as any).Firestore = {
+          getDocuments: jest.fn().mockReturnValue([]),
+        };
+
+        const result = globalThis.Billing.listBillingByIds(['billings/999']);
+
+        expect(result).toEqual([]);
+        expect(globalThis.Firestore.getDocuments).toHaveBeenCalledWith(
+          'billings',
+          ['999']
+        );
+      });
+    });
+
+    describe('when using MongoDB', () => {
+      beforeEach(() => {
+        (globalThis as any).DB_CONNECTION = DBConnection.MongoDB;
+      });
+
+      it('should return billings by ids with members', () => {
+        // Mock MongoDB.aggregate
+        (globalThis as any).MongoDB = {
+          aggregate: jest.fn().mockReturnValue(mockBillings),
+        };
+
+        const result = globalThis.Billing.listBillingByIds(['123', '456']);
+
+        expect(result).toEqual(mockBillings);
+        expect(globalThis.MongoDB.aggregate).toHaveBeenCalledWith('billings', [
+          {
+            $match: {
+              _id: {
+                $in: [{ $oid: '123' }, { $oid: '456' }],
+              },
+            },
+          },
+          {
+            $lookup: {
+              from: 'members',
+              localField: '_id',
+              foreignField: 'billingId',
+              as: 'members',
+            },
+          },
+        ]);
+      });
+
+      it('should return empty array when no billings found', () => {
+        // Mock MongoDB.aggregate
+        (globalThis as any).MongoDB = {
+          aggregate: jest.fn().mockReturnValue([]),
+        };
+
+        const result = globalThis.Billing.listBillingByIds(['999']);
+
+        expect(result).toEqual([]);
+        expect(globalThis.MongoDB.aggregate).toHaveBeenCalledWith('billings', [
+          {
+            $match: {
+              _id: {
+                $in: [{ $oid: '999' }],
+              },
+            },
+          },
+          {
+            $lookup: {
+              from: 'members',
+              localField: '_id',
+              foreignField: 'billingId',
+              as: 'members',
+            },
+          },
+        ]);
+      });
+    });
+  });
 });

@@ -4,6 +4,7 @@ import { createBilling } from '../01-helpers/tests/utils';
 describe('Billing Scheduler', () => {
   let mockSendMessage: jest.Mock;
   let mockListBillingWithMembers: jest.Mock;
+  let mockListBillingByIds: jest.Mock;
   let mockUpdateBalance: jest.Mock;
   let mockGenerateUserBalance: jest.Mock;
   let mockGenerateCreditBalance: jest.Mock;
@@ -13,6 +14,7 @@ describe('Billing Scheduler', () => {
   beforeEach(() => {
     mockSendMessage = jest.fn();
     mockListBillingWithMembers = jest.fn();
+    mockListBillingByIds = jest.fn();
     mockUpdateBalance = jest.fn();
     mockGenerateUserBalance = jest.fn();
     mockGenerateCreditBalance = jest.fn();
@@ -23,6 +25,7 @@ describe('Billing Scheduler', () => {
     };
     (globalThis as any).Billing = {
       listBillingWithMembers: mockListBillingWithMembers,
+      listBillingByIds: mockListBillingByIds,
       updateBalance: mockUpdateBalance,
       generateUserBalance: mockGenerateUserBalance,
       generateBalanceMessage: mockGenerateCreditBalance,
@@ -61,6 +64,7 @@ describe('Billing Scheduler', () => {
         ],
       });
       mockListBillingWithMembers.mockReturnValue([billing]);
+      mockListBillingByIds.mockReturnValue([billing]);
       mockGenerateCreditBalance.mockReturnValue('Credit Balance Message');
 
       globalThis.billingScheduler();
@@ -83,6 +87,7 @@ describe('Billing Scheduler', () => {
         members: [{ username: 'user1', balance: 100000 }],
       });
       mockListBillingWithMembers.mockReturnValue([billing]);
+      mockListBillingByIds.mockReturnValue([billing]);
       mockIsLeapYear.mockReturnValue(false);
 
       globalThis.billingScheduler();
@@ -98,6 +103,7 @@ describe('Billing Scheduler', () => {
         members: [{ username: 'user1', balance: 100000 }],
       });
       mockListBillingWithMembers.mockReturnValue([billing]);
+      mockListBillingByIds.mockReturnValue([billing]);
       mockIsLeapYear.mockReturnValue(true);
 
       globalThis.billingScheduler();
@@ -126,6 +132,7 @@ describe('Billing Scheduler', () => {
         ],
       });
       mockListBillingWithMembers.mockReturnValue([billing]);
+      mockListBillingByIds.mockReturnValue([billing]);
       mockGenerateUserBalance.mockReturnValue(['@user1: Rp 10.000']);
 
       globalThis.billingScheduler();
@@ -151,7 +158,7 @@ describe('Billing Scheduler', () => {
         ],
       });
       mockListBillingWithMembers.mockReturnValue([billing]);
-
+      mockListBillingByIds.mockReturnValue([billing]);
       globalThis.billingScheduler();
 
       expect(mockGenerateUserBalance).not.toHaveBeenCalled();
@@ -180,6 +187,7 @@ describe('Billing Scheduler', () => {
         ],
       });
       mockListBillingWithMembers.mockReturnValue([billing]);
+      mockListBillingByIds.mockReturnValue([billing]);
       mockGenerateCreditBalance.mockReturnValue('Credit Balance Message');
 
       globalThis.billingScheduler();
@@ -207,6 +215,7 @@ describe('Billing Scheduler', () => {
         members: [{ username: 'user1', balance: 200000 }],
       });
       mockListBillingWithMembers.mockReturnValue([billing1, billing2]);
+      mockListBillingByIds.mockReturnValue([billing1, billing2]);
       mockGenerateCreditBalance
         .mockReturnValueOnce('Credit Balance Message 1')
         .mockReturnValueOnce('Credit Balance Message 2');
