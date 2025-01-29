@@ -3,9 +3,15 @@ namespace Billing {
     $match: Record<string, any>
   ): Billing[] {
     const query = Firestore.query<Billing>('billings');
+
     for (const key in $match) {
-      query.Where(key, '==', $match[key]);
+      if ('$in' in $match[key]) {
+        query.Where(key, 'in', $match[key].$in);
+      } else {
+        query.Where(key, '==', $match[key]);
+      }
     }
+
     const docs = query.Execute();
 
     return docs.map((doc) => ({
@@ -42,6 +48,37 @@ namespace Billing {
         return mongoListBillingWithMembers($match);
       default:
         return firestoreListBillingWithMembers($match);
+    }
+  }
+
+  function firestoreListBillingByIds(ids: string[]): Billing[] {
+    const docs = Firestore.getDocuments<Billing>(
+      'billings',
+      ids.map((id) => id.replace('billings/', ''))
+    );
+    return docs.map((doc) => ({
+      ...doc.obj,
+      _id: doc.path,
+    }));
+  }
+
+  function mongoListBillingByIds(ids: string[]): Billing[] {
+    const $oids = ids.map((id) => ({
+      $oid: id,
+    }));
+    return mongoListBillingWithMembers({
+      _id: {
+        $in: $oids,
+      },
+    });
+  }
+
+  export function listBillingByIds(ids: string[]): Billing[] {
+    switch (DB_CONNECTION) {
+      case DBConnection.MongoDB:
+        return mongoListBillingByIds(ids);
+      default:
+        return firestoreListBillingByIds(ids);
     }
   }
 

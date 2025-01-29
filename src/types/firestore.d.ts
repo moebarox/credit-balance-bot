@@ -36,7 +36,10 @@ type Firestore = {
   ) => void;
   deleteDocument: (documentId: string) => void;
   getDocument: <T>(documentId: string) => FirestoreDocument<T>;
-  getDocuments: <T>(collection: string) => FirestoreDocument<T>[];
+  getDocuments: <T>(
+    collection: string,
+    ids?: string[]
+  ) => FirestoreDocument<T>[];
   query: <T>(collection: string) => FirestoreQuery<T>;
 };
 

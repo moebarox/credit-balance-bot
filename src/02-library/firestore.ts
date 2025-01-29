@@ -10,8 +10,8 @@ namespace Firestore {
     return firestore.getDocument<T>(documentId);
   }
 
-  export function getDocuments<T>(collection: string) {
-    return firestore.getDocuments<T>(collection);
+  export function getDocuments<T>(collection: string, ids?: string[]) {
+    return firestore.getDocuments<T>(collection, ids);
   }
 
   export function query<T>(collection: string) {

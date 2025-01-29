@@ -63,13 +63,9 @@ function billingScheduler() {
   }
 
   if (deduction.length > 0) {
-    const updatedBillings = Billing.listBillingWithMembers({
-      _id: {
-        $in: deduction.map((c) => ({
-          $oid: c._id,
-        })),
-      },
-    });
+    const updatedBillings = Billing.listBillingByIds(
+      deduction.map((c) => c._id as string)
+    );
 
     for (let i = 0; i < updatedBillings.length; i += 1) {
       const billing = updatedBillings[i];
