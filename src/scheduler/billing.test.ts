@@ -21,11 +21,11 @@ describe('Billing Scheduler', () => {
     (globalThis as any).Bot = {
       sendMessage: mockSendMessage,
     };
-    (globalThis as any).Credit = {
+    (globalThis as any).Billing = {
       listBillingWithMembers: mockListBillingWithMembers,
       updateBalance: mockUpdateBalance,
       generateUserBalance: mockGenerateUserBalance,
-      generateCreditBalance: mockGenerateCreditBalance,
+      generateBalanceMessage: mockGenerateCreditBalance,
     };
     (globalThis as any).DateHelper = {
       isLeapYear: mockIsLeapYear,

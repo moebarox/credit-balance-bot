@@ -13,7 +13,7 @@ function addMemberHandler(ctxMessage: TelegramMessage) {
 
   const { key, users } = matcher.groups!;
 
-  const billings = Credit.listBillingWithMembers({ groupId, key });
+  const billings = Billing.listBillingWithMembers({ groupId, key });
   if (billings.length === 0) {
     Bot.sendMessage(
       groupId,
@@ -50,10 +50,9 @@ function addMemberHandler(ctxMessage: TelegramMessage) {
     return [
       ...acc,
       {
-        billingId: { $oid: billing._id },
         username,
         balance: 0,
-      } as BillingMember,
+      },
     ];
   }, []);
 
@@ -62,7 +61,7 @@ function addMemberHandler(ctxMessage: TelegramMessage) {
     return;
   }
 
-  Credit.addMembers(payload);
+  Billing.addMembers(billing._id as string, payload);
 
   Bot.sendMessage(groupId, 'berhasil join mamangque :D');
 }

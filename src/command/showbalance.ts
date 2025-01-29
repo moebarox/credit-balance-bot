@@ -5,9 +5,9 @@ function showBalanceHandler(ctxMessage: TelegramMessage) {
 
   // Print all credit balance within the current group
   if (!text) {
-    const billings = Credit.listBillingWithMembers({ groupId });
+    const billings = Billing.listBillingWithMembers({ groupId });
     billings.forEach((billing: Billing) => {
-      const message = Credit.generateCreditBalance(billing, billing.members!);
+      const message = Billing.generateBalanceMessage(billing, billing.members!);
       Bot.sendMessage(groupId, message);
     });
     return;
@@ -22,7 +22,7 @@ function showBalanceHandler(ctxMessage: TelegramMessage) {
   }
 
   const { key } = matcher.groups!;
-  const billings = Credit.listBillingWithMembers({ groupId, key });
+  const billings = Billing.listBillingWithMembers({ groupId, key });
 
   // Error not found
   if (billings.length === 0) {
@@ -34,7 +34,7 @@ function showBalanceHandler(ctxMessage: TelegramMessage) {
     return;
   }
 
-  const message = Credit.generateCreditBalance(
+  const message = Billing.generateBalanceMessage(
     billings[0],
     billings[0].members!
   );

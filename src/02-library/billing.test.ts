@@ -1,7 +1,11 @@
-import './credit';
+import './billing';
+import '../00-constants/db';
 
-describe('Credit library', () => {
+describe('Billing library', () => {
   beforeEach(() => {
+    // Mock ENV variables
+    (globalThis as any).DB_CONNECTION = 'mongodb';
+
     // Mock MongoDB functions
     (globalThis as any).MongoDB = {
       aggregate: jest.fn(),
@@ -39,7 +43,9 @@ describe('Credit library', () => {
       ];
       (globalThis.MongoDB.aggregate as jest.Mock).mockReturnValue(mockBillings);
 
-      const result = globalThis.Credit.listBillingWithMembers({ groupId: 123 });
+      const result = globalThis.Billing.listBillingWithMembers({
+        groupId: 123,
+      });
 
       expect(globalThis.MongoDB.aggregate).toHaveBeenCalledWith('billings', [
         {
@@ -75,7 +81,7 @@ describe('Credit library', () => {
       ];
       (globalThis.MongoDB.aggregate as jest.Mock).mockReturnValue(mockBillings);
 
-      const result = globalThis.Credit.listBillingWithMembers({
+      const result = globalThis.Billing.listBillingWithMembers({
         billingDate: { $in: [1, 2] },
       });
 
@@ -110,7 +116,7 @@ describe('Credit library', () => {
       };
       (globalThis.MongoDB.findOne as jest.Mock).mockReturnValue(mockBilling);
 
-      const result = globalThis.Credit.getBilling(123, 'wifi');
+      const result = globalThis.Billing.getBilling(123, 'wifi');
 
       expect(globalThis.MongoDB.findOne).toHaveBeenCalledWith('billings', {
         key: 'wifi',
@@ -122,23 +128,6 @@ describe('Credit library', () => {
     });
   });
 
-  describe('listMembers', () => {
-    it('should fetch members by billing ID', () => {
-      const mockMembers = [
-        { username: 'user1', balance: 50000 },
-        { username: 'user2', balance: 75000 },
-      ];
-      (globalThis.MongoDB.find as jest.Mock).mockReturnValue(mockMembers);
-
-      const result = globalThis.Credit.listMembers('123');
-
-      expect(globalThis.MongoDB.find).toHaveBeenCalledWith('members', {
-        billingId: { $oid: '123' },
-      });
-      expect(result).toEqual(mockMembers);
-    });
-  });
-
   describe('generateUserBalance', () => {
     it('should format member balances', () => {
       const members = [
@@ -146,7 +135,7 @@ describe('Credit library', () => {
         { username: 'user2', balance: 75000 },
       ];
 
-      const result = globalThis.Credit.generateUserBalance(members);
+      const result = globalThis.Billing.generateUserBalance(members);
 
       expect(result).toEqual(['@user1: Rp 50000', '@user2: Rp 75000']);
       expect(globalThis.NumberHelper.toCurrency).toHaveBeenCalledWith(50000);
@@ -154,7 +143,7 @@ describe('Credit library', () => {
     });
   });
 
-  describe('generateCreditBalance', () => {
+  describe('generateBalanceMessage', () => {
     it('should generate credit balance message', () => {
       const billing = {
         key: 'wifi',
@@ -168,7 +157,10 @@ describe('Credit library', () => {
         { username: 'user2', balance: 75000 },
       ];
 
-      const result = globalThis.Credit.generateCreditBalance(billing, members);
+      const result = globalThis.Billing.generateBalanceMessage(
+        billing,
+        members
+      );
 
       expect(result).toEqual([
         'saldo wifi Maret 2024',
@@ -198,7 +190,7 @@ describe('Credit library', () => {
         .mockReturnValueOnce(members) // First call for listMembers
         .mockReturnValueOnce([{ username: 'user1', balance: 100000 }]); // Second call for success result
 
-      const result = globalThis.Credit.updateBalance(
+      const result = globalThis.Billing.updateBalance(
         billing,
         ['@user1'],
         50000
@@ -241,7 +233,7 @@ describe('Credit library', () => {
           members.map((m) => ({ ...m, balance: m.balance + 50000 }))
         ); // Second call for success result
 
-      const result = globalThis.Credit.updateBalance(billing, ['all'], 50000);
+      const result = globalThis.Billing.updateBalance(billing, ['all'], 50000);
 
       expect(globalThis.MongoDB.updateOne).toHaveBeenCalledTimes(2);
       expect(result.success).toHaveLength(2);
@@ -262,7 +254,7 @@ describe('Credit library', () => {
         .mockReturnValueOnce(members) // First call for listMembers
         .mockReturnValueOnce([{ username: 'user1', balance: 100000 }]); // Second call for success result
 
-      const result = globalThis.Credit.updateBalance(
+      const result = globalThis.Billing.updateBalance(
         billing,
         ['@user1', '@nonexistent'],
         50000
@@ -279,27 +271,28 @@ describe('Credit library', () => {
     it('should insert multiple members into the database', () => {
       const mockMembers = [
         {
-          billingId: { $oid: '123' },
           username: 'user1',
           balance: 0,
         },
         {
-          billingId: { $oid: '123' },
           username: 'user2',
           balance: 0,
         },
       ];
 
-      globalThis.Credit.addMembers(mockMembers);
+      globalThis.Billing.addMembers('123', mockMembers);
 
       expect(globalThis.MongoDB.insertMany).toHaveBeenCalledWith(
         'members',
-        mockMembers
+        mockMembers.map((m) => ({
+          ...m,
+          billingId: { $oid: '123' },
+        }))
       );
     });
 
     it('should handle empty members array', () => {
-      globalThis.Credit.addMembers([]);
+      globalThis.Billing.addMembers('123', []);
 
       expect(globalThis.MongoDB.insertMany).toHaveBeenCalledWith('members', []);
     });
@@ -312,7 +305,7 @@ describe('Credit library', () => {
         deletedCount: 1,
       });
 
-      globalThis.Credit.deleteBilling(billingId);
+      globalThis.Billing.deleteBilling(billingId);
 
       expect(globalThis.MongoDB.deleteMany).toHaveBeenCalledWith('billings', {
         _id: { $oid: billingId },
@@ -338,7 +331,7 @@ describe('Credit library', () => {
         },
       ];
 
-      globalThis.Credit.deleteMembers(members);
+      globalThis.Billing.deleteMembers('123', members);
 
       expect(globalThis.MongoDB.deleteMany).toHaveBeenCalledWith('members', {
         billingId: {
@@ -359,7 +352,7 @@ describe('Credit library', () => {
         },
       ];
 
-      globalThis.Credit.deleteMembers(members);
+      globalThis.Billing.deleteMembers('123', members);
 
       expect(globalThis.MongoDB.deleteMany).toHaveBeenCalledWith('members', {
         billingId: {
@@ -380,10 +373,16 @@ describe('Credit library', () => {
         billingAmount: 100000,
         adminId: 123,
         groupId: 456,
+        members: [
+          {
+            username: 'testuser',
+            balance: 0,
+          },
+        ],
       };
       (globalThis.MongoDB.insertOne as jest.Mock).mockReturnValue('new_id');
 
-      const result = globalThis.Credit.createBilling(billing);
+      globalThis.Billing.createBilling(billing);
 
       expect(globalThis.MongoDB.insertOne).toHaveBeenCalledWith('billings', {
         key: 'wifi',
@@ -394,13 +393,21 @@ describe('Credit library', () => {
           $numberLong: '456',
         },
       });
-      expect(result).toBe('new_id');
+
+      expect(globalThis.MongoDB.insertMany).toHaveBeenCalledWith('members', [
+        {
+          billingId: { $oid: 'new_id' },
+          username: 'testuser',
+          balance: 0,
+        },
+      ]);
     });
   });
 
   describe('updateBilling', () => {
     it('should update an existing billing', () => {
       const billing = {
+        _id: '123',
         key: 'wifi',
         billingDate: 15,
         billingAmount: 100000,
@@ -408,15 +415,12 @@ describe('Credit library', () => {
         groupId: 456,
       };
 
-      globalThis.Credit.updateBilling(billing);
+      globalThis.Billing.updateBilling(billing);
 
       expect(globalThis.MongoDB.updateOne).toHaveBeenCalledWith(
         'billings',
         {
-          key: 'wifi',
-          groupId: {
-            $numberLong: '456',
-          },
+          _id: { $oid: '123' },
         },
         {
           key: 'wifi',
@@ -432,6 +436,7 @@ describe('Credit library', () => {
 
     it('should handle billing update with different values', () => {
       const billing = {
+        _id: '123',
         key: 'internet',
         billingDate: 1,
         billingAmount: 200000,
@@ -439,15 +444,12 @@ describe('Credit library', () => {
         groupId: 999,
       };
 
-      globalThis.Credit.updateBilling(billing);
+      globalThis.Billing.updateBilling(billing);
 
       expect(globalThis.MongoDB.updateOne).toHaveBeenCalledWith(
         'billings',
         {
-          key: 'internet',
-          groupId: {
-            $numberLong: '999',
-          },
+          _id: { $oid: '123' },
         },
         {
           key: 'internet',

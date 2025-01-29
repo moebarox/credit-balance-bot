@@ -42,7 +42,8 @@ function doPost(e: GoogleAppsScript.Events.DoPost) {
         break;
       default:
     }
-  } catch (err) {
+  } catch (err: any) {
+    console.error(err);
     Bot.sendMessage(BOT_ADMIN_ID || data.message.chat.id, `Error: ${err}`);
   }
 }
@@ -52,6 +53,7 @@ function debug() {
     message: {
       chat: {
         id: -256622337,
+        type: 'group',
       },
       from: {
         id: BOT_ADMIN_ID,

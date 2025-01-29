@@ -14,7 +14,7 @@ function joinHandler(ctxMessage: TelegramMessage) {
 
   const { key } = matcher.groups!;
 
-  const billings = Credit.listBillingWithMembers({ groupId, key });
+  const billings = Billing.listBillingWithMembers({ groupId, key });
   if (billings.length === 0) {
     Bot.sendMessage(
       groupId,
@@ -34,9 +34,8 @@ function joinHandler(ctxMessage: TelegramMessage) {
     return;
   }
 
-  Credit.addMembers([
+  Billing.addMembers(billing._id as string, [
     {
-      billingId: { $oid: String(billing._id) },
       username,
       balance: 0,
     },

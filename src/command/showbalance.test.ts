@@ -20,9 +20,9 @@ describe('ShowBalance command', () => {
       sendMessage: mockSendMessage,
       getMessage_: mockGetMessage,
     };
-    (globalThis as any).Credit = {
+    (globalThis as any).Billing = {
       listBillingWithMembers: mockListBillingWithMembers,
-      generateCreditBalance: mockGenerateCreditBalance,
+      generateBalanceMessage: mockGenerateCreditBalance,
     };
     (globalThis as any).COMMAND_HELP = {
       showbalance: 'Usage: /showbalance [key]',

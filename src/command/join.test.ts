@@ -20,7 +20,7 @@ describe('Join command', () => {
       sendMessage: mockSendMessage,
       getMessage_: mockGetMessage,
     };
-    (globalThis as any).Credit = {
+    (globalThis as any).Billing = {
       listBillingWithMembers: mockListBillingWithMembers,
       addMembers: mockAddMembers,
     };
@@ -95,9 +95,8 @@ describe('Join command', () => {
 
       globalThis.joinHandler(createTelegramMessage('/join wifi'));
 
-      expect(mockAddMembers).toHaveBeenCalledWith([
+      expect(mockAddMembers).toHaveBeenCalledWith('123', [
         {
-          billingId: { $oid: '123' },
           username: 'testuser',
           balance: 0,
         },

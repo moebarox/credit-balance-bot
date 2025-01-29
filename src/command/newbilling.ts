@@ -24,7 +24,7 @@ function newBillingHandler(ctxMessage: TelegramMessage) {
   const { key, billingDate, billingAmount } = matcher.groups!;
 
   // Check if already created
-  const billing = Credit.getBilling(groupId, key);
+  const billing = Billing.getBilling(groupId, key);
   if (billing) {
     Bot.sendMessage(
       groupId,
@@ -34,21 +34,19 @@ function newBillingHandler(ctxMessage: TelegramMessage) {
     return;
   }
 
-  const id = Credit.createBilling({
+  Billing.createBilling({
     key,
     groupId,
     billingDate: Number(billingDate),
     billingAmount: Number(billingAmount),
     adminId: ctxMessage.from.id,
+    members: [
+      {
+        username: ctxMessage.from.username,
+        balance: 0,
+      },
+    ],
   });
-
-  Credit.addMembers([
-    {
-      billingId: { $oid: id },
-      username: ctxMessage.from.username,
-      balance: 0,
-    },
-  ]);
 
   Bot.sendMessage(
     groupId,

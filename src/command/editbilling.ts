@@ -15,7 +15,7 @@ function editBillingHandler(ctxMessage: TelegramMessage) {
 
   const { key, billingDate, billingAmount } = matcher.groups!;
 
-  const billing = Credit.getBilling(groupId, key);
+  const billing = Billing.getBilling(groupId, key);
   if (!billing) {
     Bot.sendMessage(
       groupId,
@@ -31,12 +31,13 @@ function editBillingHandler(ctxMessage: TelegramMessage) {
     return;
   }
 
-  Credit.updateBilling({
+  Billing.updateBilling({
     key,
     groupId,
     billingDate: Number(billingDate),
     billingAmount: Number(billingAmount),
     adminId: ctxMessage.from.id,
+    _id: billing._id,
   });
 
   Bot.sendMessage(groupId, 'sudah diedit mamangque :D');

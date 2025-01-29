@@ -9,23 +9,23 @@ describe('DeleteBilling command', () => {
   let mockGetMessage: jest.Mock;
   let mockListBillingWithMembers: jest.Mock;
   let mockDeleteBilling: jest.Mock;
-  let mockGenerateCreditBalance: jest.Mock;
+  let mockGenerateUserBalance: jest.Mock;
 
   beforeEach(() => {
     mockSendMessage = jest.fn();
     mockGetMessage = jest.fn();
     mockListBillingWithMembers = jest.fn();
     mockDeleteBilling = jest.fn();
-    mockGenerateCreditBalance = jest.fn();
+    mockGenerateUserBalance = jest.fn();
 
     (globalThis as any).Bot = {
       sendMessage: mockSendMessage,
       getMessage_: mockGetMessage,
     };
-    (globalThis as any).Credit = {
+    (globalThis as any).Billing = {
       listBillingWithMembers: mockListBillingWithMembers,
       deleteBilling: mockDeleteBilling,
-      generateCreditBalance: mockGenerateCreditBalance,
+      generateUserBalance: mockGenerateUserBalance,
     };
     (globalThis as any).COMMAND_HELP = {
       deletebilling: 'Usage: /deletebilling <key>',
@@ -105,7 +105,7 @@ describe('DeleteBilling command', () => {
 
       mockGetMessage.mockReturnValue('wifi');
       mockListBillingWithMembers.mockReturnValue([mockBilling]);
-      mockGenerateCreditBalance.mockReturnValue(['balance info']);
+      mockGenerateUserBalance.mockReturnValue(['balance info']);
 
       globalThis.deleteBillingHandler(
         createTelegramMessage('/deletebilling wifi')
@@ -116,16 +116,12 @@ describe('DeleteBilling command', () => {
 
       // Should show success message
       expect(mockSendMessage).toHaveBeenCalledWith(123456, [
-        'parantos dihapus mamangque :(',
+        `billing \`wifi\` parantos dihapus mamangque :\\(`,
         'tapi jang jaga-jaga, ieu saldo terakhir nya',
+        '---',
+        'balance info',
+        '---',
       ]);
-
-      // Should show final balance
-      expect(mockGenerateCreditBalance).toHaveBeenCalledWith(
-        mockBilling,
-        mockMembers
-      );
-      expect(mockSendMessage).toHaveBeenCalledWith(123456, ['balance info']);
     });
 
     it('should handle billing with no members', () => {
@@ -133,14 +129,14 @@ describe('DeleteBilling command', () => {
 
       mockGetMessage.mockReturnValue('wifi');
       mockListBillingWithMembers.mockReturnValue([mockBilling]);
-      mockGenerateCreditBalance.mockReturnValue(['balance info']);
+      mockGenerateUserBalance.mockReturnValue(['balance info']);
 
       globalThis.deleteBillingHandler(
         createTelegramMessage('/deletebilling wifi')
       );
 
       expect(mockDeleteBilling).toHaveBeenCalledWith(String(mockBilling._id));
-      expect(mockGenerateCreditBalance).toHaveBeenCalledWith(mockBilling, []);
+      expect(mockGenerateUserBalance).toHaveBeenCalledWith([]);
     });
   });
 });

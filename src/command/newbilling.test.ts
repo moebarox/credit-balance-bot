@@ -6,23 +6,20 @@ describe('NewBilling command', () => {
   let mockGetMessage: jest.Mock;
   let mockGetBilling: jest.Mock;
   let mockCreateBilling: jest.Mock;
-  let mockAddMembers: jest.Mock;
 
   beforeEach(() => {
     mockSendMessage = jest.fn();
     mockGetMessage = jest.fn();
     mockGetBilling = jest.fn();
     mockCreateBilling = jest.fn();
-    mockAddMembers = jest.fn();
 
     (globalThis as any).Bot = {
       sendMessage: mockSendMessage,
       getMessage_: mockGetMessage,
     };
-    (globalThis as any).Credit = {
+    (globalThis as any).Billing = {
       getBilling: mockGetBilling,
       createBilling: mockCreateBilling,
-      addMembers: mockAddMembers,
     };
     (globalThis as any).COMMAND_HELP = {
       newbilling: 'Usage: /newbilling <key> <billingDate> <billingAmount>',
@@ -131,15 +128,13 @@ describe('NewBilling command', () => {
         billingAmount: 150000,
         adminId: 789,
         groupId: 123456,
+        members: [
+          {
+            username: 'testuser',
+            balance: 0,
+          },
+        ],
       });
-
-      expect(mockAddMembers).toHaveBeenCalledWith([
-        {
-          billingId: { $oid: 'new_billing_id' },
-          username: 'testuser',
-          balance: 0,
-        },
-      ]);
 
       expect(mockSendMessage).toHaveBeenCalledWith(
         123456,

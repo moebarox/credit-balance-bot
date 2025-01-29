@@ -20,7 +20,7 @@ describe('EditBilling command', () => {
       sendMessage: mockSendMessage,
       getMessage_: mockGetMessage,
     };
-    (globalThis as any).Credit = {
+    (globalThis as any).Billing = {
       getBilling: mockGetBilling,
       updateBilling: mockUpdateBilling,
     };
@@ -110,6 +110,7 @@ describe('EditBilling command', () => {
       );
 
       expect(mockUpdateBilling).toHaveBeenCalledWith({
+        _id: '123',
         key: 'wifi',
         groupId: 123456,
         billingDate: 15,

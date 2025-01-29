@@ -22,7 +22,7 @@ describe('EditBalance command', () => {
       sendMessage: mockSendMessage,
       getMessage_: mockGetMessage,
     };
-    (globalThis as any).Credit = {
+    (globalThis as any).Billing = {
       getBilling: mockGetBilling,
       updateBalance: mockUpdateBalance,
       generateUserBalance: mockGenerateUserBalance,

@@ -8,7 +8,7 @@ function billingScheduler() {
   const deduction = [];
   const reminder = [];
 
-  const billings = Credit.listBillingWithMembers({
+  const billings = Billing.listBillingWithMembers({
     billingDate: {
       $in: [currentDate, nextDate],
     },
@@ -40,7 +40,7 @@ function billingScheduler() {
     );
 
     if (insufficientBalanceMembers.length) {
-      const userBalance = Credit.generateUserBalance(
+      const userBalance = Billing.generateUserBalance(
         insufficientBalanceMembers
       );
       Bot.sendMessage(billing.groupId as number, [
@@ -59,11 +59,11 @@ function billingScheduler() {
     const billingAmount = Math.round(
       billing.billingAmount / billing.members!.length
     );
-    Credit.updateBalance(billing, ['all'], -billingAmount);
+    Billing.updateBalance(billing, ['all'], -billingAmount);
   }
 
   if (deduction.length > 0) {
-    const updatedBillings = Credit.listBillingWithMembers({
+    const updatedBillings = Billing.listBillingWithMembers({
       _id: {
         $in: deduction.map((c) => ({
           $oid: c._id,
@@ -73,7 +73,7 @@ function billingScheduler() {
 
     for (let i = 0; i < updatedBillings.length; i += 1) {
       const billing = updatedBillings[i];
-      const message = Credit.generateCreditBalance(billing, billing.members!);
+      const message = Billing.generateBalanceMessage(billing, billing.members!);
       Bot.sendMessage(billing.groupId as number, message);
     }
   }

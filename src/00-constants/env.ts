@@ -19,3 +19,14 @@ const MONGO_DATA_SOURCE =
   PropertiesService.getScriptProperties().getProperty('MONGO_DATA_SOURCE');
 const MONGO_API_KEY =
   PropertiesService.getScriptProperties().getProperty('MONGO_API_KEY');
+
+const SA_EMAIL =
+  PropertiesService.getScriptProperties().getProperty('SA_EMAIL');
+const SA_PROJECT_ID =
+  PropertiesService.getScriptProperties().getProperty('SA_PROJECT_ID');
+const SA_PRIVATE_KEY = PropertiesService.getScriptProperties()
+  .getProperty('SA_PRIVATE_KEY')
+  ?.replace(/\\n/g, '\n');
+
+const DB_CONNECTION =
+  PropertiesService.getScriptProperties().getProperty('DB_CONNECTION');

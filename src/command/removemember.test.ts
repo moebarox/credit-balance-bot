@@ -22,7 +22,7 @@ describe('RemoveMember command', () => {
       sendMessage: mockSendMessage,
       getMessage_: mockGetMessage,
     };
-    (globalThis as any).Credit = {
+    (globalThis as any).Billing = {
       listBillingWithMembers: mockListBillingWithMembers,
       deleteMembers: mockDeleteMembers,
       generateUserBalance: mockGenerateUserBalance,
@@ -112,7 +112,7 @@ describe('RemoveMember command', () => {
         createTelegramMessage('/removemember wifi @user1 @user2')
       );
 
-      expect(mockDeleteMembers).toHaveBeenCalledWith(members);
+      expect(mockDeleteMembers).toHaveBeenCalledWith('123', members);
       expect(mockSendMessage).toHaveBeenCalledWith(123456, [
         'berhasil ngahapus member dengan sisa saldo:',
         '---',
@@ -130,7 +130,7 @@ describe('RemoveMember command', () => {
         createTelegramMessage('/removemember wifi user1')
       );
 
-      expect(mockDeleteMembers).toHaveBeenCalledWith(members);
+      expect(mockDeleteMembers).toHaveBeenCalledWith('123', members);
     });
 
     it('should handle multiple spaces between usernames', () => {
@@ -149,7 +149,7 @@ describe('RemoveMember command', () => {
         createTelegramMessage('/removemember wifi user1   user2')
       );
 
-      expect(mockDeleteMembers).toHaveBeenCalledWith(members);
+      expect(mockDeleteMembers).toHaveBeenCalledWith('123', members);
     });
   });
 });

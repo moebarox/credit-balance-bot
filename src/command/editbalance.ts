@@ -14,7 +14,7 @@ function editBalanceHandler(ctxMessage: TelegramMessage) {
   }
 
   const { key, users, amount } = matcher.groups!;
-  const billing = Credit.getBilling(groupId, key);
+  const billing = Billing.getBilling(groupId, key);
 
   // Error not found
   if (!billing) {
@@ -32,7 +32,7 @@ function editBalanceHandler(ctxMessage: TelegramMessage) {
     return;
   }
 
-  const { success, failed } = Credit.updateBalance(
+  const { success, failed } = Billing.updateBalance(
     billing,
     users.split(' ').filter(Boolean),
     Number(amount)
@@ -50,7 +50,7 @@ function editBalanceHandler(ctxMessage: TelegramMessage) {
   }
 
   if (success.length) {
-    const userBalance = Credit.generateUserBalance(success);
+    const userBalance = Billing.generateUserBalance(success);
     Bot.sendMessage(groupId, [
       `saldo ${key} beres diubah`,
       '---',

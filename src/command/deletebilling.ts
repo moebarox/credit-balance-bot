@@ -13,7 +13,7 @@ function deleteBillingHandler(ctxMessage: TelegramMessage) {
 
   const { key } = matcher.groups!;
 
-  const billings = Credit.listBillingWithMembers({ groupId, key });
+  const billings = Billing.listBillingWithMembers({ groupId, key });
   if (billings.length === 0) {
     Bot.sendMessage(
       groupId,
@@ -31,15 +31,16 @@ function deleteBillingHandler(ctxMessage: TelegramMessage) {
     return;
   }
 
-  Credit.deleteBilling(String(billing._id));
+  Billing.deleteBilling(billing._id as string);
 
+  const userBalance = Billing.generateUserBalance(billing.members!);
   Bot.sendMessage(groupId, [
-    'parantos dihapus mamangque :(',
+    `billing \`${key}\` parantos dihapus mamangque :\\(`,
     'tapi jang jaga-jaga, ieu saldo terakhir nya',
+    '---',
+    userBalance.join('\n'),
+    '---',
   ]);
-
-  const message = Credit.generateCreditBalance(billing, billing.members!);
-  Bot.sendMessage(groupId, message);
 }
 
 globalThis.deleteBillingHandler = deleteBillingHandler;

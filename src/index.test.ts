@@ -153,6 +153,7 @@ describe('Telegram Bot Webhook', () => {
       expect(mockShowBalanceHandler).toHaveBeenCalledWith({
         chat: {
           id: -256622337,
+          type: 'group',
         },
         from: {
           id: 123456,

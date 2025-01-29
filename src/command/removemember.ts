@@ -13,7 +13,7 @@ function removeMemberHandler(ctxMessage: TelegramMessage) {
 
   const { key, users } = matcher.groups!;
 
-  const billings = Credit.listBillingWithMembers({ groupId, key });
+  const billings = Billing.listBillingWithMembers({ groupId, key });
   if (billings.length === 0) {
     Bot.sendMessage(
       groupId,
@@ -39,9 +39,9 @@ function removeMemberHandler(ctxMessage: TelegramMessage) {
     usernames.includes(m.username)
   );
 
-  Credit.deleteMembers(members);
+  Billing.deleteMembers(billing._id as string, members);
 
-  const userBalance = Credit.generateUserBalance(members);
+  const userBalance = Billing.generateUserBalance(members);
   Bot.sendMessage(groupId, [
     'berhasil ngahapus member dengan sisa saldo:',
     '---',

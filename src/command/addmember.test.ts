@@ -20,7 +20,7 @@ describe('AddMember command', () => {
       sendMessage: mockSendMessage,
       getMessage_: mockGetMessage,
     };
-    (globalThis as any).Credit = {
+    (globalThis as any).Billing = {
       listBillingWithMembers: mockListBillingWithMembers,
       addMembers: mockAddMembers,
     };
@@ -121,14 +121,12 @@ describe('AddMember command', () => {
         createTelegramMessage('/addmember wifi @user1 @user2')
       );
 
-      expect(mockAddMembers).toHaveBeenCalledWith([
+      expect(mockAddMembers).toHaveBeenCalledWith('123', [
         {
-          billingId: { $oid: '123' },
           username: 'user1',
           balance: 0,
         },
         {
-          billingId: { $oid: '123' },
           username: 'user2',
           balance: 0,
         },
@@ -151,9 +149,8 @@ describe('AddMember command', () => {
         createTelegramMessage('/addmember wifi @user1 @existinguser')
       );
 
-      expect(mockAddMembers).toHaveBeenCalledWith([
+      expect(mockAddMembers).toHaveBeenCalledWith('123', [
         {
-          billingId: { $oid: '123' },
           username: 'user1',
           balance: 0,
         },
@@ -168,14 +165,12 @@ describe('AddMember command', () => {
         createTelegramMessage('/addmember wifi   @user1    @user2')
       );
 
-      expect(mockAddMembers).toHaveBeenCalledWith([
+      expect(mockAddMembers).toHaveBeenCalledWith('123', [
         {
-          billingId: { $oid: '123' },
           username: 'user1',
           balance: 0,
         },
         {
-          billingId: { $oid: '123' },
           username: 'user2',
           balance: 0,
         },
@@ -190,14 +185,12 @@ describe('AddMember command', () => {
         createTelegramMessage('/addmember wifi user1 @user2')
       );
 
-      expect(mockAddMembers).toHaveBeenCalledWith([
+      expect(mockAddMembers).toHaveBeenCalledWith('123', [
         {
-          billingId: { $oid: '123' },
           username: 'user1',
           balance: 0,
         },
         {
-          billingId: { $oid: '123' },
           username: 'user2',
           balance: 0,
         },
