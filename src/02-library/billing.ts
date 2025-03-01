@@ -5,7 +5,7 @@ namespace Billing {
     const query = Firestore.query<Billing>('billings');
 
     for (const key in $match) {
-      if ('$in' in $match[key]) {
+      if (typeof $match[key] === 'object' && '$in' in $match[key]) {
         query.Where(key, 'in', $match[key].$in);
       } else {
         query.Where(key, '==', $match[key]);

@@ -92,6 +92,9 @@ describe('Billing Scheduler', () => {
 
       globalThis.billingScheduler();
 
+      expect(mockListBillingWithMembers).toHaveBeenCalledWith({
+        billingDate: { $in: [28, 1] },
+      });
       expect(mockUpdateBalance).toHaveBeenCalledWith(billing, ['all'], -100000);
     });
 
@@ -108,6 +111,9 @@ describe('Billing Scheduler', () => {
 
       globalThis.billingScheduler();
 
+      expect(mockListBillingWithMembers).toHaveBeenCalledWith({
+        billingDate: { $in: [29, 1] },
+      });
       expect(mockUpdateBalance).toHaveBeenCalledWith(billing, ['all'], -100000);
     });
   });

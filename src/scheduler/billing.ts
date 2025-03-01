@@ -40,6 +40,10 @@ function billingScheduler() {
     );
 
     if (insufficientBalanceMembers.length) {
+      console.log(
+        `${billing.key}: ${insufficientBalanceMembers.length} member(s) insufficient balance`
+      );
+
       const userBalance = Billing.generateUserBalance(
         insufficientBalanceMembers
       );
@@ -68,6 +72,8 @@ function billingScheduler() {
     );
 
     for (let i = 0; i < updatedBillings.length; i += 1) {
+      console.log(`${updatedBillings[i].key}: update balance`);
+
       const billing = updatedBillings[i];
       const message = Billing.generateBalanceMessage(billing, billing.members!);
       Bot.sendMessage(billing.groupId as number, message);
